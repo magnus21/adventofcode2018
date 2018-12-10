@@ -1,62 +1,101 @@
 package adventofcode
 
+
 fun main(args: Array<String>) {
 
-    val input = "466 players; last marble is worth 71436 points"
-    //val input = "9 players; last marble is worth 50 points" // 32
+    val input = "466 players; last marble is worth 7143600 points"
+    //val input = "466 players; last marble is worth 71436 points"
+    //val input = "9 players; last marble is worth 25 points" // 32 22563
 
     val parts = input.split(" ")
     val nrOfPlayers = Integer.valueOf(parts[0])
-    val lastMarble = Integer.valueOf(parts[6])
+    val lastMarbleNumber = Integer.valueOf(parts[6])
 
-    val multipleValue = 23
-    val players = (1..nrOfPlayers).map { 0 }.toMutableList()
-    val marbles = mutableListOf(0)
-    var currentMarble = 0
-    var nextMarble = 1
+    val multipleValue = 23L
+    val players = (1..nrOfPlayers).map { 0L }.toMutableList()
+
+    val marbleRing = MarbleRing(Marble(0))
+    var nextMarbleNumber = 1L
     var currentPlayer = 1
 
-    // head body tail
-    val head = mutableListOf<Int>()
-    val body = mutableListOf(0)
-    val tail = mutableListOf<Int>()
-    while (nextMarble <= lastMarble) {
-        val currentMarblePosition = marbles.indexOf(currentMarble)
+    while (nextMarbleNumber <= lastMarbleNumber) {
+        val newMarble = Marble(nextMarbleNumber)
 
-        if(nextMarble % multipleValue == 0) {
-            val positionForAdditionalMarble = getPositionForMarbleStepsAwayCounterClockwise(7, currentMarble, marbles)
-            val score = nextMarble + marbles.removeAt(positionForAdditionalMarble)
-            players[currentPlayer - 1] += score
-            currentMarble = marbles[getPositionForMarbleStepsAwayCounterClockwise(6, currentMarble, marbles)]
+        if (nextMarbleNumber % multipleValue == 0L) {
+            val additionalMarble = marbleRing.previousMarbleStepsAway(7)
+
+            players[currentPlayer - 1] += nextMarbleNumber + additionalMarble.value
+
+            additionalMarble.previous.next = additionalMarble.next
+            additionalMarble.next.previous = additionalMarble.previous
+
+            marbleRing.setCurrentMarble(additionalMarble.next)
         } else {
-            if (currentMarblePosition == marbles.size - 1) {
-                marbles.add(1, nextMarble)
-            } else {
-                marbles.add(currentMarblePosition + 2, nextMarble)
-            }
-            currentMarble = nextMarble
+            val firstNextMarble = marbleRing.nextMarbleStepsAway(1)
+            val secondNextMarble = marbleRing.nextMarbleStepsAway(2)
+
+            firstNextMarble.next = newMarble
+            secondNextMarble.previous = newMarble
+
+            newMarble.next = secondNextMarble
+            newMarble.previous = firstNextMarble
+
+            marbleRing.setCurrentMarble(newMarble)
         }
 
         //print("[$currentPlayer] ")
-        //marbles.map { if (it == currentMarble) "($it)" else "$it" }.forEach { print("$it ") }
+        //marbleRing.toList().map { if (it == marbleRing.getCurrentMarble()) "($it)" else "$it" }.forEach { print("$it ") }
         //println()
 
-        nextMarble++
-        currentPlayer = getNextPlayer(currentPlayer, players.size)
+        nextMarbleNumber++
+        currentPlayer = if (currentPlayer < nrOfPlayers) currentPlayer + 1 else 1
     }
 
-    println(players.mapIndexed { player, score ->  Pair(player, score) }.sortedByDescending { it.second }.first())
+    println(players.mapIndexed { player, score -> Pair(player, score) }.sortedByDescending { it.second }.first())
 
 }
 
-fun getPositionForMarbleStepsAwayCounterClockwise(steps: Int, currentMarble: Int, marbles: MutableList<Int>): Int {
-    val position = marbles.indexOf(currentMarble) - steps
-    if (position < 0) {
-        return marbles.size + position
+class Marble(val value: Long) {
+    var next: Marble = this
+    var previous: Marble = this
+    override fun toString(): String {
+        return "$value"
     }
-    return position
 }
 
-fun getNextPlayer(currentPlayer: Int, nrOfPlayers: Int): Int {
-    return if (currentPlayer < nrOfPlayers) currentPlayer + 1 else 1
+class MarbleRing(private val firstMarble: Marble) {
+
+    private var currentMarble: Marble = firstMarble
+
+    fun setCurrentMarble(marble: Marble) {
+        currentMarble = marble
+    }
+
+    fun nextMarbleStepsAway(steps: Int): Marble {
+        return marbleStepsAway(steps, true)
+    }
+
+    fun previousMarbleStepsAway(steps: Int): Marble {
+        return marbleStepsAway(steps, false)
+    }
+
+    fun marbleStepsAway(steps: Int, next: Boolean): Marble {
+        var marble = currentMarble
+        for (step in 1..steps) {
+            marble = if (next) marble.next else marble.previous
+        }
+        return marble
+    }
+
+    fun toList(): List<Marble> {
+        val list = mutableListOf<Marble>()
+
+        var marble = firstMarble
+        do {
+            list.add(marble)
+            marble = marble.next
+        } while (marble != firstMarble)
+
+        return list
+    }
 }
