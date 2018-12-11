@@ -6,7 +6,7 @@ fun main(args: Array<String>) {
 
     val points = File("src/main/resources/10.txt").readLines().map { parsePoint(it) }
 
-    val letterHeightMargin = 12 // A good guess, points should converge since the never change direction.
+    val letterHeightMargin = 12 // A good guess, points should converge since they never change direction.
     var seconds = 0
     do {
         val boundaries = getBoundaries(points)
