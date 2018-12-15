@@ -3,7 +3,8 @@ package adventofcode
 
 fun main(args: Array<String>) {
 
-    val input = 209231
+    //Part 1: val input = 209231
+    val input = "209231"
 
     val firstRecipe = Recipe(3)
     val secondRecipe = Recipe(7)
@@ -12,10 +13,10 @@ fun main(args: Array<String>) {
     recipesRing.appendRecipe(secondRecipe)
     recipesRing.getCurrentRecipes().addAll(listOf(firstRecipe,secondRecipe))
 
-
     var recipeCount = 2
-    while (recipeCount <= input + 10) {
-
+    // Part 1:    while (recipeCount <= input + 10) {
+    var tail: Pair<Boolean,Int>
+    do {
         val sum = recipesRing.getSumOfCurrentRecipes()
 
         if (sum < 10) {
@@ -34,19 +35,24 @@ fun main(args: Array<String>) {
         recipesRing.getCurrentRecipes().clear()
         recipesRing.getCurrentRecipes().addAll(currentRecipes)
 
+
         /*
         recipesRing.toList().map {
             if (it == recipesRing.getCurrentRecipes()[0]) "($it)" else (if (it == recipesRing.getCurrentRecipes()[1]) "[$it]" else " $it ")
         }.forEach { print(it) }
         println(" : $recipeCount")
         */
-    }
 
-    recipesRing.toList().drop(input).take(10).map { it.value }.forEach{print(it)}
+        tail = recipesRing.hasTail(input, sum >= 10)
+    } while(!tail.first)
+
+    // Part 1: recipesRing.toList().drop(input).take(10).map { it.value }.forEach{print(it)}
+    println("recipeCount: " + (recipeCount + tail.second - input.length))
 }
 
 class Recipe(val value: Int) {
     var next: Recipe = this
+    var previous: Recipe = this
     override fun toString(): String {
         return "$value"
     }
@@ -56,16 +62,16 @@ class RecipesRing(recipe: Recipe) {
 
     private var currentRecipes : MutableList<Recipe> = mutableListOf()
     private var firstRecipe = recipe
-    private var lastRecipe = recipe
 
     fun getCurrentRecipes(): MutableList<Recipe> {
         return currentRecipes
     }
 
     fun appendRecipe(recipe: Recipe) {
-        lastRecipe.next = recipe
-        lastRecipe = recipe
-        lastRecipe.next = firstRecipe
+        firstRecipe.previous.next = recipe
+        recipe.previous = firstRecipe.previous
+        recipe.next = firstRecipe
+        firstRecipe.previous = recipe
     }
 
     fun recipeStepsAway(steps: Int, recipe: Recipe): Recipe {
@@ -90,5 +96,31 @@ class RecipesRing(recipe: Recipe) {
 
     fun getSumOfCurrentRecipes(): Int {
         return currentRecipes.map { it.value }.sum()
+    }
+
+    fun hasTail(input: String, checkTwoLast: Boolean): Pair<Boolean,Int> {
+        var recipe = firstRecipe.previous
+        val tail1 = mutableListOf<Recipe>()
+        for (i in 1..input.length) {
+            tail1.add(recipe)
+            recipe = recipe.previous
+        }
+        val last = Pair(tail1.reversed().joinToString("") == input, 0)
+
+        if(last.first) {
+            return last
+        }
+
+        if(checkTwoLast) {
+            val tail2 = mutableListOf<Recipe>()
+            for (i in 1..input.length) {
+                tail2.add(recipe)
+                recipe = recipe.next
+            }
+
+            return  Pair(tail2.joinToString("") == input, -1)
+        }
+
+        return last
     }
 }
