@@ -14,20 +14,25 @@ fun main(args: Array<String>) {
     println(fighters)
     printGame(fieldSize, wallFieldPoints, fighters)
 
+    // TODO: Add path selection debug print.
+
     var combatOver = false
     var roundCount = 0
     do {
+        val chosenPaths = mutableListOf<FieldPoint>()
+
         if (fighters.filter { it.hitPoints > 0 }.groupBy { it.type }.size == 1) {
             combatOver = true
         } else {
-            for (fighter in fighters.filter { it.hitPoints > 0 }.toMutableList()) {
+           for (fighter in fighters.filter { it.hitPoints > 0 }.toMutableList()) {
                 if (!fighters.filter { it.hitPoints > 0 }.filter { it.type != fighter.type }.any()) {
                     combatOver = true
                     roundCount--
                     break
                 }
                 if (fighter.hitPoints > 0) {
-                    doTurnFor(fighter, fighters.filter { it.hitPoints > 0 }.toMutableList(), wallFieldPoints)
+                    // TODO: chosenPath
+                    doTurnFor(fighter, fighters.filter { it.hitPoints > 0 }.toMutableList(), wallFieldPoints,chosenPaths)
                 }
             }
             roundCount++
@@ -37,19 +42,21 @@ fun main(args: Array<String>) {
         fighters.sortWith(compareBy({ it.position.y }, { it.position.x }))
 
         println("\nAfter $roundCount rounds:")
-        printGame(fieldSize, wallFieldPoints, fighters)
+        printGame(fieldSize, wallFieldPoints, fighters, chosenPaths)
 
     } while (!combatOver)
 
     val hitPointsLeft = fighters.filter { it.hitPoints > 0 }.map { it.hitPoints }.sum()
 
     println("$roundCount * $hitPointsLeft: " + roundCount * hitPointsLeft)
+    //between 188300 - 190999 .. 71 * 2683: 190493
 }
 
 fun doTurnFor(
     fighter: Fighter,
     sortedFighters: MutableList<Fighter>,
-    wallFieldPoints: MutableSet<FieldPoint>
+    wallFieldPoints: MutableSet<FieldPoint>,
+    chosenPath: MutableList<FieldPoint>
 ) {
     val enemyType = if (fighter.type == GOBLIN) ELF else GOBLIN
     val enemyPaths = mutableSetOf<Pair<Fighter, List<FieldPoint>>>()
@@ -58,13 +65,15 @@ fun doTurnFor(
         fighter,
         wallFieldPoints,
         sortedFighters,
-        mutableListOf(),
         enemyPaths,
-        fighter.position,
-        mutableMapOf()
+        mutableListOf(mutableListOf(fighter.position)),
+        mutableSetOf(fighter.position)
     )
 
-    val neighbourEnemies = enemyPaths.filter { it.second.isEmpty() }.map { it.first }
+    val neighbourEnemies = enemyPaths
+        .filter { it.second.size == 1 }
+        .map { it.first }
+
     if (neighbourEnemies.isNotEmpty()) {
         // Sort by hit count and position
         val chosenEnemy = neighbourEnemies
@@ -77,18 +86,29 @@ fun doTurnFor(
     } else if (enemyPaths.isNotEmpty()) {
         // Move towards enemy
         val chosenEnemyPair = enemyPaths
-            .sortedWith(compareBy({ it.second.size }, { it.first.position.y }, { it.first.position.x }))
+            .sortedWith(
+                compareBy(
+                    { it.second.size },
+                    { it.second.last().y },
+                    { it.second.last().x },
+                    { it.second.drop(1).first().y },
+                    { it.second.drop(1).first().x }
+
+                )
+            )
             .first()
 
         val chosenEnemy = chosenEnemyPair.first
 
+        chosenPath.addAll(chosenEnemyPair.second)
+
         println(fighter.type.toString() + ":" + fighter.position.x + "," + fighter.position.y + " moves toward " + chosenEnemy.type.toString() + ":" + chosenEnemy.position.x + "," + chosenEnemy.position.y)
 
         // Move
-        fighter.position.x = chosenEnemyPair.second.first().x
-        fighter.position.y = chosenEnemyPair.second.first().y
+        fighter.position.x = chosenEnemyPair.second[1].x
+        fighter.position.y = chosenEnemyPair.second[1].y
 
-        if (chosenEnemyPair.second.size == 1) {
+        if (chosenEnemyPair.second.size == 2) {
             // Attack after move
             debugPrint(fighter, chosenEnemy, "ATTACK AFTER MOVE", "attacks")
             attackEnemy(fighter.attackPower, chosenEnemy)
@@ -109,61 +129,93 @@ fun findClosestEnemies(
     fighter: Fighter,
     wallFieldPoints: MutableSet<FieldPoint>,
     sortedFighters: MutableList<Fighter>,
-    previousPositions: MutableList<FieldPoint>,
     enemyPaths: MutableSet<Pair<Fighter, List<FieldPoint>>>,
-    pos: FieldPoint,
-    reachedPositions: MutableMap<FieldPoint, Int>
+    positions: MutableList<MutableList<FieldPoint>>,
+    reachedPositions: MutableSet<FieldPoint>
 ) {
-    if (enemyPaths.isEmpty() || previousPositions.size <= enemyPaths.first().second.size) {
-        var enemiesFoundOnCurrentDistance = false
-        val newPositions = mutableListOf<FieldPoint>()
+    val nextPositions = getNeighbours(
+        positions,
+        reachedPositions,
+        sortedFighters,
+        enemyType,
+        enemyPaths,
+        wallFieldPoints
+    )
 
-        listOf(Pair(0, -1), Pair(-1, 0), Pair(1, 0), Pair(0, 1))
-            .forEach { direction ->
-                val newPos = FieldPoint(pos.x + direction.first, pos.y + direction.second)
+    if (enemyPaths.isNotEmpty()) {
+        return
+    }
 
-                reachedPositions.getOrDefault(newPos, Int.MAX_VALUE)
-                if (previousPositions.size <= reachedPositions.getOrDefault(newPos, Int.MAX_VALUE)) {
+    if (nextPositions.isNotEmpty()) {
+        findClosestEnemies(
+            enemyType,
+            fighter,
+            wallFieldPoints,
+            sortedFighters,
+            enemyPaths,
+            nextPositions,
+            reachedPositions
+        )
+    }
+}
 
-                    val otherFighter =
-                        sortedFighters.firstOrNull { f -> f.position.x == newPos.x && f.position.y == newPos.y }
+private fun getNeighbours(
+    positions: MutableList<MutableList<FieldPoint>>,
+    reachedPositions: MutableSet<FieldPoint>,
+    sortedFighters: MutableList<Fighter>,
+    enemyType: Type,
+    enemyPaths: MutableSet<Pair<Fighter, List<FieldPoint>>>,
+    wallFieldPoints: MutableSet<FieldPoint>
+): MutableList<MutableList<FieldPoint>> {
+    val nextPositions = mutableListOf<MutableList<FieldPoint>>()
 
-                    if (otherFighter != null && otherFighter.type == enemyType) {
-                        // Enemy found
-                        enemiesFoundOnCurrentDistance = true
-                        val previousPositionsList = mutableListOf<FieldPoint>()
-                        previousPositionsList.addAll(previousPositions)
+    val sortDrop = if (positions[0].size > 1) 1 else 0
+    val reachedPositionsInDepth = mutableSetOf<FieldPoint>()
 
-                        enemyPaths.add(Pair(otherFighter, previousPositionsList))
-                        //println(fighter.type.toString() + ":" + fighter.position.x + "," + fighter.position.y + " found enemy:" + "  newPos: $newPos")
-                    } else if (!wallFieldPoints.contains(newPos) && otherFighter == null) {
-                        // Dot position found
-                        newPositions.add(newPos)
-                        reachedPositions.put(newPos, previousPositions.size)
-                        //println(fighter.type.toString() + ":" + fighter.position.x + "," + fighter.position.y + "  newPos: $newPos, previousPositions: " + previousPositions)
+    positions
+       //.sortedWith(compareBy({ it.drop(sortDrop).first().y }, { it.drop(sortDrop).first().x }))
+        .forEach { positionList ->
+            listOf(Pair(0, -1), Pair(-1, 0), Pair(1, 0), Pair(0, 1))
+                .map { direction ->
+                    FieldPoint(
+                        positionList.last().x + direction.first,
+                        positionList.last().y + direction.second
+                    )
+                }
+                .forEach { newPos ->
+                    if (!reachedPositions.contains(newPos)) {
+                        val otherFighter =
+                            sortedFighters.firstOrNull { f -> f.position.x == newPos.x && f.position.y == newPos.y }
+
+                        if (otherFighter != null && otherFighter.type == enemyType) {
+                            // Enemy found
+                            reachedPositions.add(newPos)
+                            val previousPositionsList = mutableListOf<FieldPoint>()
+                            previousPositionsList.addAll(positionList)
+
+                            enemyPaths.add(Pair(otherFighter, previousPositionsList))
+                            //println(fighter.type.toString() + ":" + fighter.position.x + "," + fighter.position.y + " found enemy:" + "  newPos: $newPos")
+                        } else if (!wallFieldPoints.contains(newPos) && otherFighter == null) {
+                            // Dot position found
+                            val previousPositionsList = mutableListOf<FieldPoint>()
+                            previousPositionsList.addAll(positionList)
+                            previousPositionsList.add(newPos)
+
+                            nextPositions.add(previousPositionsList)
+                            reachedPositions.add(newPos)
+                            //println(fighter.type.toString() + ":" + fighter.position.x + "," + fighter.position.y + "  newPos: $newPos, previousPositions: " + previousPositions)
+                        }
                     }
                 }
-            }
-
-        if (!enemiesFoundOnCurrentDistance && newPositions.isNotEmpty()) {
-            for (newPos in newPositions) {
-                val newPreviousPositions = mutableListOf<FieldPoint>()
-                newPreviousPositions.addAll(previousPositions)
-                newPreviousPositions.add(newPos)
-
-                findClosestEnemies(
-                    enemyType,
-                    fighter,
-                    wallFieldPoints,
-                    sortedFighters,
-                    newPreviousPositions,
-                    enemyPaths,
-                    newPos,
-                    reachedPositions
-                )
-            }
         }
-    }
+
+    //reachedPositions.addAll(reachedPositionsInDepth)
+
+    return nextPositions
+        //.sortedWith(compareBy({ it.drop(1).first().y }, { it.drop(1).first().x },{ it.last().y }, { it.last().x }))
+       // .groupBy { it.last() }
+       // .map { it.value.first() }
+       // .toMutableList()
 }
 
 fun parseGame(input: List<String>): Triple<Pair<Int, Int>, MutableSet<FieldPoint>, MutableList<Fighter>> {
@@ -193,14 +245,27 @@ enum class Type(val code: String) {
     GOBLIN("G"), ELF("E"), WALL("#"), DOT(".")
 }
 
-fun printGame(fieldSize: Pair<Int, Int>, wallFieldPoints: MutableSet<FieldPoint>, fighters: MutableList<Fighter>) {
+fun printGame(
+    fieldSize: Pair<Int, Int>,
+    wallFieldPoints: MutableSet<FieldPoint>,
+    fighters: MutableList<Fighter>,
+    chosenPaths: MutableList<FieldPoint> = mutableListOf()
+) {
+    print("    ")
+    for (x in 0 until fieldSize.first) {
+        print(x%10)
+    }
+    println()
     for (y in 0 until fieldSize.second) {
+        print(y.toString().padStart(2,'0') + ": ")
         for (x in 0 until fieldSize.first) {
             val fighter = fighters.filter { it.hitPoints > 0 }.firstOrNull { it.position.x == x && it.position.y == y }
             if (wallFieldPoints.contains(FieldPoint(x, y))) {
                 print('#')
             } else if (fighter != null) {
                 print(fighter.type.code)
+            } else if(chosenPaths.contains(FieldPoint(x, y))) {
+                print(chosenPaths.filter {  it == FieldPoint(x, y) }.size % 10)
             } else {
                 print(".")
             }
