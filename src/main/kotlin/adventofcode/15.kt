@@ -7,7 +7,7 @@ import java.io.File
 
 fun main(args: Array<String>) {
 
-    val input = File("src/main/resources/15.txt").readLines()
+    val input = File("src/main/resources/15.1-test.txt").readLines()
 
     val (fieldSize, wallFieldPoints, fighters) = parseGame(input)
 
@@ -46,7 +46,6 @@ fun main(args: Array<String>) {
     val hitPointsLeft = fighters.filter { it.hitPoints > 0 }.map { it.hitPoints }.sum()
 
     println("$roundCount * $hitPointsLeft: " + roundCount * hitPointsLeft)
-    //between 188300 - 190999 .. 71 * 2683: 190493
 }
 
 fun doTurnFor(
@@ -99,7 +98,7 @@ fun doTurnFor(
 
         chosenPath.addAll(chosenEnemyPair.second)
 
-        println(fighter.type.toString() + ":" + fighter.position.x + "," + fighter.position.y + " moves toward " + chosenEnemy.type.toString() + ":" + chosenEnemy.position.x + "," + chosenEnemy.position.y)
+        debugPrint(fighter, chosenEnemy, "MOVE", "moves towards")
 
         // Move
         fighter.position.x = chosenEnemyPair.second[1].x
@@ -166,8 +165,6 @@ fun getNeighbours(
 ): MutableList<MutableList<FieldPoint>> {
     val nextPositions = mutableListOf<MutableList<FieldPoint>>()
 
-    val reachedPositionsInDepth = mutableSetOf<FieldPoint>()
-
     positions
         .forEach { positionList ->
             listOf(Pair(0, -1), Pair(-1, 0), Pair(1, 0), Pair(0, 1))
@@ -204,13 +201,7 @@ fun getNeighbours(
                 }
         }
 
-    //reachedPositions.addAll(reachedPositionsInDepth.toSet())
-
     return nextPositions
-        //.sortedWith(compareBy({ it.drop(1).first().y }, { it.drop(1).first().x },{ it.last().y }, { it.last().x }))
-       // .groupBy { it.last() }
-       // .map { it.value.first() }
-       // .toMutableList()
 }
 
 fun parseGame(input: List<String>): Triple<Pair<Int, Int>, MutableSet<FieldPoint>, MutableList<Fighter>> {
@@ -226,7 +217,7 @@ fun parseGame(input: List<String>): Triple<Pair<Int, Int>, MutableSet<FieldPoint
             when (row[x]) {
                 '#' -> fieldPoints.add(FieldPoint(x, y))
                 'G' -> fighters.add(Fighter(FieldPoint(x, y), GOBLIN))
-                'E' -> fighters.add(Fighter(FieldPoint(x, y), ELF))
+                'E' -> fighters.add(Fighter(FieldPoint(x, y), ELF, 200, 14))
             }
         }
     }
