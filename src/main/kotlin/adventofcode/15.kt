@@ -14,8 +14,6 @@ fun main(args: Array<String>) {
     println(fighters)
     printGame(fieldSize, wallFieldPoints, fighters)
 
-    // TODO: Add path selection debug print.
-
     var combatOver = false
     var roundCount = 0
     do {
@@ -31,7 +29,6 @@ fun main(args: Array<String>) {
                     break
                 }
                 if (fighter.hitPoints > 0) {
-                    // TODO: chosenPath
                     doTurnFor(fighter, fighters.filter { it.hitPoints > 0 }.toMutableList(), wallFieldPoints,chosenPaths)
                 }
             }
@@ -92,8 +89,8 @@ fun doTurnFor(
                     { it.second.last().y },
                     { it.second.last().x },
                     { it.second.drop(1).first().y },
-                    { it.second.drop(1).first().x }
-
+                    { it.second.drop(1).first().x },
+                    { it.first.hitPoints }
                 )
             )
             .first()
@@ -159,7 +156,7 @@ fun findClosestEnemies(
     }
 }
 
-private fun getNeighbours(
+fun getNeighbours(
     positions: MutableList<MutableList<FieldPoint>>,
     reachedPositions: MutableSet<FieldPoint>,
     sortedFighters: MutableList<Fighter>,
@@ -169,11 +166,9 @@ private fun getNeighbours(
 ): MutableList<MutableList<FieldPoint>> {
     val nextPositions = mutableListOf<MutableList<FieldPoint>>()
 
-    val sortDrop = if (positions[0].size > 1) 1 else 0
     val reachedPositionsInDepth = mutableSetOf<FieldPoint>()
 
     positions
-       //.sortedWith(compareBy({ it.drop(sortDrop).first().y }, { it.drop(sortDrop).first().x }))
         .forEach { positionList ->
             listOf(Pair(0, -1), Pair(-1, 0), Pair(1, 0), Pair(0, 1))
                 .map { direction ->
@@ -189,7 +184,7 @@ private fun getNeighbours(
 
                         if (otherFighter != null && otherFighter.type == enemyType) {
                             // Enemy found
-                            reachedPositions.add(newPos)
+                            //reachedPositions.add(newPos)
                             val previousPositionsList = mutableListOf<FieldPoint>()
                             previousPositionsList.addAll(positionList)
 
@@ -209,7 +204,7 @@ private fun getNeighbours(
                 }
         }
 
-    //reachedPositions.addAll(reachedPositionsInDepth)
+    //reachedPositions.addAll(reachedPositionsInDepth.toSet())
 
     return nextPositions
         //.sortedWith(compareBy({ it.drop(1).first().y }, { it.drop(1).first().x },{ it.last().y }, { it.last().x }))
