@@ -19,6 +19,10 @@ class Queue<T> {
         return items.isEmpty()
     }
 
+    fun isNotEmpty(): Boolean {
+        return items.isNotEmpty()
+    }
+
     fun toList(): MutableList<T> {
         return items.toMutableList()
     }
