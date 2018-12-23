@@ -19,68 +19,69 @@ fun main(args: Array<String>) {
     // Part one.
     var registry = mutableListOf(0L, 0L, 0L, 0L, 0L, 0L)
     var ipValue = 0L
-    executeInstructions(registry, ipRegistry, ipValue, programInstructions, operations)
+    Day19.executeInstructions(registry, ipRegistry, ipValue, programInstructions, operations)
     println(registry)
 
     // Part two.
     registry = mutableListOf(1L, 0L, 0L, 0L, 0L, 0L)
     ipValue = 0L
     // To big loop (fast forward inner loop..)
-    executeInstructions(registry, ipRegistry, ipValue, programInstructions, operations, false)
+    Day19.executeInstructions(registry, ipRegistry, ipValue, programInstructions, operations, false)
     println(registry)
     // 27941760
 
 }
 
-private fun executeInstructions(
-    registry: MutableList<Long>,
-    ipRegistry: Int,
-    ipValueStart: Long,
-    programInstructions: List<NamedInstruction>,
-    operations: MutableMap<String, (Long, Long, Long, MutableList<Long>) -> Unit>,
-    debug: Boolean = false
-) {
-    var ipValue = ipValueStart
-    do {
-
-        registry[ipRegistry] = ipValue
-
-        val registryBeforeOperation = registry.toMutableList()
-        val ins = programInstructions[ipValue.toInt()]
-        operations[ins.opName]!!.invoke(ins.a, ins.b, ins.c, registry)
-
-        if (debug) {
-            printProgramState(ipValue, registryBeforeOperation, ins, registry)
-        }
-
-        ipValue = registry[ipRegistry] + 1
-
-        // Fast forward hack.
-        if (ipValue == 4L && registry[3] == 1L && registry[5] == 10551264L) {
-            // Fast forward
-            if (registry[5] % registry[1] == 0L) {
-                registry[2] = 10551264L
-                registry[3] = 10551264L
-            } else {
-                registry[3] = 10551264L
-            }
-
-        }
-    } while (ipValue < programInstructions.size)
-}
-
-fun printProgramState(
-    ipValue: Long,
-    registryBeforeOperation: MutableList<Long>,
-    ins: NamedInstruction,
-    registry: MutableList<Long>
-) {
-    println("ip=$ipValue $registryBeforeOperation ${ins.opName} ${ins.a} ${ins.b} ${ins.c} $registry")
-}
-
 data class NamedInstruction(val opName: String, val a: Long, val b: Long, val c: Long)
 
 object Day19 {
+
+    fun executeInstructions(
+        registry: MutableList<Long>,
+        ipRegistry: Int,
+        ipValueStart: Long,
+        programInstructions: List<NamedInstruction>,
+        operations: MutableMap<String, (Long, Long, Long, MutableList<Long>) -> Unit>,
+        debug: Boolean = false
+    ) {
+        var ipValue = ipValueStart
+        do {
+
+            registry[ipRegistry] = ipValue
+
+            val registryBeforeOperation = registry.toMutableList()
+            val ins = programInstructions[ipValue.toInt()]
+            operations[ins.opName]!!.invoke(ins.a, ins.b, ins.c, registry)
+
+            if (debug) {
+                printProgramState(ipValue, registryBeforeOperation, ins, registry)
+            }
+
+            ipValue = registry[ipRegistry] + 1
+
+            // Fast forward hack.
+            if (ipValue == 4L && registry[3] == 1L && registry[5] == 10551264L) {
+                // Fast forward
+                if (registry[5] % registry[1] == 0L) {
+                    registry[2] = 10551264L
+                    registry[3] = 10551264L
+                } else {
+                    registry[3] = 10551264L
+                }
+
+            }
+        } while (ipValue < programInstructions.size)
+    }
+
+    fun printProgramState(
+        ipValue: Long,
+        registryBeforeOperation: MutableList<Long>,
+        ins: NamedInstruction,
+        registry: MutableList<Long>
+    ) {
+        println("ip=$ipValue $registryBeforeOperation ${ins.opName} ${ins.a} ${ins.b} ${ins.c} $registry")
+    }
+
     fun parseInput(rawInput: List<String>): Pair<Int, List<NamedInstruction>> {
         val instructions = mutableListOf<NamedInstruction>()
 
