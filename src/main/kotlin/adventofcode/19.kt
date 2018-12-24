@@ -5,8 +5,8 @@ import java.io.File
 fun main(args: Array<String>) {
 
     val operationCodes = OperationCodes()
+    operationCodes.parseInput()
 
-    val (operationResults, instructions) = operationCodes.parseInput()
     val operations = operationCodes.getOperations()
 
     val rawInput = File("src/main/resources/19.txt").readLines()
