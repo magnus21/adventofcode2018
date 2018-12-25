@@ -30,4 +30,8 @@ class Queue<T> {
     fun contains(t: T): Boolean {
         return items.contains(t)
     }
+
+    fun sortQueue(comparator: Comparator<T>) {
+        items.sortWith(comparator)
+    }
 }
