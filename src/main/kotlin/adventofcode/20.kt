@@ -55,13 +55,22 @@ enum class Door(val code: Char, val dx: Int, val dy: Int) {
     START('X', 0, 0)
 }
 
-data class Position(val x: Int, val y: Int) {
-    fun walkThrough(door: Door): Position {
-        return Position(this.x + door.dx, this.y + door.dy)
+private fun Door.getCompliment(): Door {
+    return when (this) {
+        NORTH -> SOUTH
+        SOUTH -> NORTH
+        WEST -> EAST
+        else -> WEST
     }
 }
 
-data class Room(val position: Position, val doors: MutableSet<Door>)
+data class Position(val x: Int, val y: Int)
+
+data class Room(val position: Position, val doors: MutableSet<Door>) {
+    fun walkThrough(door: Door): Position {
+        return Position(this.position.x + door.dx, this.position.y + door.dy)
+    }
+}
 
 object Day20 {
 
@@ -91,7 +100,7 @@ object Day20 {
                     currentRoom.doors.add(door)
 
                     // Next room
-                    currentRoom = map.computeIfAbsent(currentRoom.position.walkThrough(door)) { key ->
+                    currentRoom = map.computeIfAbsent(currentRoom.walkThrough(door)) { key ->
                         Room(key, mutableSetOf())
                     }
                     currentRoom.doors.add(door.getCompliment())
@@ -113,7 +122,7 @@ object Day20 {
 
         if (room.doors.any { it != fromDoor.getCompliment() }) {
             room.doors.filter { fromDoor == START || it != fromDoor.getCompliment() }.forEach { door ->
-                queue.enqueue(Triple(distance + 1, map.get(room.position.walkThrough(door))!!, door))
+                queue.enqueue(Triple(distance + 1, map.get(room.walkThrough(door))!!, door))
             }
         }
     }
@@ -222,14 +231,5 @@ object Day20 {
             }
         }
         println()
-    }
-}
-
-private fun Door.getCompliment(): Door {
-    return when (this) {
-        NORTH -> SOUTH
-        SOUTH -> NORTH
-        WEST -> EAST
-        else -> WEST
     }
 }
