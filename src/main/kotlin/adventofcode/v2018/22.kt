@@ -1,7 +1,7 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.RegionType.*
-import adventofcode.Tool.*
+import adventofcode.v2018.RegionType.*
+import adventofcode.v2018.Tool.*
 import adventofcode.util.Queue
 
 fun main(args: Array<String>) {
@@ -134,7 +134,13 @@ object Day22 {
         // Add some reasonable padding.. no time for fancy stuff.
         for (y in startPosition.y..(targetPosition.y + 20)) {
             for (x in startPosition.x..(targetPosition.x + 35)) {
-                calculateRegion(Position(x, y), startPosition, targetPosition, map, depth)
+                calculateRegion(
+                    Position(x, y),
+                    startPosition,
+                    targetPosition,
+                    map,
+                    depth
+                )
             }
         }
     }

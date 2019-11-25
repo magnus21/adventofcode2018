@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 
 fun main(args: Array<String>) {

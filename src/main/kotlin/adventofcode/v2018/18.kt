@@ -1,6 +1,6 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.AcerState.*
+import adventofcode.v2018.AcerState.*
 import java.io.File
 
 fun main(args: Array<String>) {

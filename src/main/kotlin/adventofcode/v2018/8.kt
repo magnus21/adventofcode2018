@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 import java.io.File
 
@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
     println(result.sum())
     */
 
-    val rootNode = Node(1,0, mutableListOf(), mutableListOf())
+    val rootNode = Node(1, 0, mutableListOf(), mutableListOf())
     buildTree(nodes, rootNode)
 
     println(getTotalMetadataEntriesSum(rootNode.children[0]))
@@ -30,7 +30,7 @@ fun buildTree(
     val nrOfChildren = nodes[0]
     val nrOfMetaDataEntries = nodes[1]
 
-    val node = Node(nrOfChildren,nrOfMetaDataEntries, mutableListOf(),mutableListOf())
+    val node = Node(nrOfChildren, nrOfMetaDataEntries, mutableListOf(), mutableListOf())
 
     if (nrOfChildren > 0) {
         var childrenLeft = nodes.drop(2)

@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 import java.io.File
 
@@ -10,20 +10,25 @@ fun main(args: Array<String>) {
     var c = 0
     val locations = locationsRaw.map { row ->
         val coords = row.trim().split(", ")
-        Location(Coord(Integer.valueOf(coords[0]), Integer.valueOf(coords[1])), symbols[c++])
+        Location(
+            Coord(Integer.valueOf(coords[0]), Integer.valueOf(coords[1])),
+            symbols[c++]
+        )
     }
 
     val boundaries = getBoundaries(locations.map { it.coord })
     println("Boundaries: " + boundaries.xmin + ", " + boundaries.ymin + ", " + boundaries.xmax + ", " + boundaries.ymax)
 
-    val dotLocation = Location(Coord(-1,-1), '.')
+    val dotLocation = Location(Coord(-1, -1), '.')
     val matrix = mutableListOf<List<Location>>()
     val notFinite = mutableSetOf<Location>()
 
     for (y in boundaries.xmin..boundaries.xmax) {
         val row = mutableListOf<Location>()
         for (x in boundaries.xmin..boundaries.xmax) {
-            val locationDistances = locations.map { loc -> Pair(loc, getDistance(loc.coord, Coord(x,y))) }.sortedBy { it.second }
+            val locationDistances = locations.map { loc -> Pair(loc,
+                getDistance(loc.coord, Coord(x, y))
+            ) }.sortedBy { it.second }
             if(locationDistances[0].second == locationDistances[1].second) {
                 row.add(dotLocation)
             } else {
@@ -50,9 +55,14 @@ fun main(args: Array<String>) {
     val closeLocations = mutableListOf<Pair<Coord,Int>>()
     for (y in boundaries.xmin..boundaries.xmax) {
         for (x in boundaries.xmin..boundaries.xmax) {
-            val distanceSum = locations.map { location -> getDistance(location.coord, Coord(x,y)) }.sum()
+            val distanceSum = locations.map { location ->
+                getDistance(
+                    location.coord,
+                    Coord(x, y)
+                )
+            }.sum()
             if( distanceSum < 10000) {
-                closeLocations.add(Pair(Coord(x,y),distanceSum))
+                closeLocations.add(Pair(Coord(x, y),distanceSum))
             }
         }
     }

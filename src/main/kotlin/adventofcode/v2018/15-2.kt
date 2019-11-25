@@ -1,6 +1,6 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.Type.ELF
+import adventofcode.v2018.Type.ELF
 import java.io.File
 
 

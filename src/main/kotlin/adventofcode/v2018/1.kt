@@ -1,10 +1,10 @@
-package adventofcode
+package adventofcode.v2018
 
-import java.io.File
+import adventofcode.util.FileParser
 
 fun main(args: Array<String>) {
 
-    val frequencies = File("src/main/resources/1.txt").readLines().map { Integer.valueOf(it) }
+    val frequencies = FileParser.getFileRows(2019, "1.txt").map { Integer.valueOf(it) }
 
     // Sum freqs.
     println(frequencies.sum())

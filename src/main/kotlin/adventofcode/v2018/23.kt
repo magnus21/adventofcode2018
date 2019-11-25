@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 import java.io.File
 
@@ -76,7 +76,7 @@ object Day23 {
             for (y in (goodGuessPos.y - range)..(goodGuessPos.y + range) step 1) {
                 for (z in (goodGuessPos.z - range)..(goodGuessPos.z + range) step 1) {
                     val pos = Position(x, y, z)
-                    result.add(Pair(pos,getNanoBotsInRange(nanoBots, pos)))
+                    result.add(Pair(pos, getNanoBotsInRange(nanoBots, pos)))
                 }
             }
         }
@@ -104,7 +104,13 @@ object Day23 {
         return rawInput.map {
             val matchResults = "([-]?\\d+)".toRegex().findAll(it).toList().map { str -> Integer.valueOf(str.value) }
 
-            NanoBot(Position(matchResults[0], matchResults[1], matchResults[2]), matchResults[3])
+            NanoBot(
+                Position(
+                    matchResults[0],
+                    matchResults[1],
+                    matchResults[2]
+                ), matchResults[3]
+            )
         }
     }
 

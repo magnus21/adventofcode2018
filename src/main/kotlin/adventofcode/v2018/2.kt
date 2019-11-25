@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 import java.io.File
 import java.util.*
@@ -7,7 +7,12 @@ fun main(args: Array<String>) {
 
     val boxIds = File("src/main/resources/2.txt").readLines()
 
-    println(findNrOfBoxIdsWithCountOfALetter(2, boxIds) * findNrOfBoxIdsWithCountOfALetter(3, boxIds))
+    println(
+        findNrOfBoxIdsWithCountOfALetter(
+            2,
+            boxIds
+        ) * findNrOfBoxIdsWithCountOfALetter(3, boxIds)
+    )
 
     println(findCommonIdPart(boxIds))
 }

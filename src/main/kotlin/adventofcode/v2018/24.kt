@@ -1,7 +1,7 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.Day24.Army.IMMUNE_SYSTEM
-import adventofcode.Day24.Army.INFECTION
+import adventofcode.v2018.Day24.Army.IMMUNE_SYSTEM
+import adventofcode.v2018.Day24.Army.INFECTION
 import java.io.File
 
 
@@ -113,7 +113,8 @@ object Day24 {
                 .filter { it.unitCount > 0 } // Filter after intermediate sort operation.
                 .forEach { attacker ->
                     //if (attacker.unitCount > 0) {
-                        val attackDamage = getAttackDamagePower(attacker, attacker.currentTarget!!)
+                        val attackDamage =
+                            getAttackDamagePower(attacker, attacker.currentTarget!!)
                         val lostUnits = attackDamage / attacker.currentTarget!!.hitPoints
 
                         val actualLostUnits =

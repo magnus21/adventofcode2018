@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 import java.io.File
 

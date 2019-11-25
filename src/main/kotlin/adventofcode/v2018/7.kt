@@ -1,4 +1,4 @@
-package adventofcode
+package adventofcode.v2018
 
 import java.io.File
 
@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
     result.forEach { print(it) }
 
     val result2 = mutableListOf<Char>()
-    val workers = Array(5) { i -> Worker('-', 0)}
+    val workers = Array(5) { i -> Worker('-', 0) }
     var seconds = 0
     do {
         val availableSteps = getAvailableSteps(groupedSteps, result2)

@@ -1,7 +1,7 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.Type.ELF
-import adventofcode.Type.GOBLIN
+import adventofcode.v2018.Type.ELF
+import adventofcode.v2018.Type.GOBLIN
 import java.io.File
 
 
@@ -29,7 +29,12 @@ fun main(args: Array<String>) {
                     break
                 }
                 if (fighter.hitPoints > 0) {
-                    doTurnFor(fighter, fighters.filter { it.hitPoints > 0 }.toMutableList(), wallFieldPoints,chosenPaths)
+                    doTurnFor(
+                        fighter,
+                        fighters.filter { it.hitPoints > 0 }.toMutableList(),
+                        wallFieldPoints,
+                        chosenPaths
+                    )
                 }
             }
             roundCount++

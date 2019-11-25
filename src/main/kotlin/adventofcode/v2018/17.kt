@@ -1,6 +1,6 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.SquareState.*
+import adventofcode.v2018.SquareState.*
 import adventofcode.util.Queue
 import java.io.File
 
@@ -132,13 +132,13 @@ fun parseSquares(rawInput: List<String>): Pair<Boundaries, MutableMap<Square, Sq
 
         if (mainParts[0].startsWith("x")) {
             val x = Integer.valueOf(mainParts[0].split("=")[1])
-            val ys = mainParts[1].split("=")[1].split("..").map { Integer.valueOf(it) }
+            val ys = mainParts[1].split("=")[1].split("src/main").map { Integer.valueOf(it) }
             for (y in ys[0]..ys[1]) {
                 squares.put(Square(x, y), CLAY)
             }
         } else {
             val y = Integer.valueOf(mainParts[0].split("=")[1])
-            val xs = mainParts[1].split("=")[1].split("..").map { Integer.valueOf(it) }
+            val xs = mainParts[1].split("=")[1].split("src/main").map { Integer.valueOf(it) }
             for (x in xs[0]..xs[1]) {
                 squares.put(Square(x, y), CLAY)
             }

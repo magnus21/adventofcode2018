@@ -1,6 +1,6 @@
-package adventofcode
+package adventofcode.v2018
 
-import adventofcode.Door.*
+import adventofcode.v2018.Door.*
 import adventofcode.util.Queue
 import java.io.File
 
