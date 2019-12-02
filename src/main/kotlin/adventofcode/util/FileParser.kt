@@ -7,5 +7,8 @@ class FileParser {
         fun getFileRows(year: Int, fileName: String): List<String> {
             return File("src/main/resources/v$year/$fileName").readLines()
         }
+        fun getCommaSeparatedValuesAsList(year: Int, fileName: String): List<String> {
+            return File("src/main/resources/v$year/$fileName").readText().split(",")
+        }
     }
 }
