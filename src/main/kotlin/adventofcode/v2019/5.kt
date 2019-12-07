@@ -13,7 +13,11 @@ object Day5 {
 
         // Run program.
         val time = measureTimeMillis {
-            IntCodeComputer.runWithInput(input.toMutableList(), 5)
+            val result1 = IntCodeComputer(input.toMutableList()).runWithInput(listOf(1))
+            println(result1.first.takeLast(1))
+
+            val result2 = IntCodeComputer(input.toMutableList()).runWithInput(listOf(5))
+            println(result2.first.takeLast(1))
         }
         println("Time: ($time milliseconds)")
     }

@@ -3,23 +3,28 @@ package adventofcode.v2019.shared
 import adventofcode.v2019.shared.IntCodeComputer.ParameterMode.IMMEDIATE
 import adventofcode.v2019.shared.IntCodeComputer.ParameterMode.POSITION
 
-object IntCodeComputer {
+class IntCodeComputer(var program: MutableList<Int>, var instructionPointer: Int = 0) {
 
-    var instructionPointer = 0
+    companion object {
+        public val WAITING_FOR_INPUT = 1;
+        public val DONE = -1;
+    }
 
-    fun runWithNounAndVerb(program: MutableList<Int>, noun: Int, verb: Int, outputEndState: Boolean = false): Int {
+    private var outputBuffer =  mutableListOf<Int>()
+
+    fun runWithNounAndVerb(noun: Int, verb: Int): Pair<MutableList<Int>, Int> {
         program[1] = noun
         program[2] = verb
 
-        return runProgram(program, outputEndState = outputEndState)
+        return runProgram()
     }
 
-    fun runWithInput(program: MutableList<Int>, input: Int, outputEndState: Boolean = false): Int {
-        return runProgram(program, input, outputEndState = outputEndState)
+    fun runWithInput(input: List<Int>): Pair<MutableList<Int>, Int> {
+        return runProgram(input)
     }
 
-    private fun runProgram(program: MutableList<Int>, input: Int? = null, outputEndState: Boolean = false): Int {
-        instructionPointer = 0
+    private fun runProgram(input: List<Int>? = null): Pair<MutableList<Int>, Int> {
+        var inputPointer = 0
 
         while (instructionPointer < program.size) {
             val opCode = getOpCode(program, instructionPointer)
@@ -33,20 +38,23 @@ object IntCodeComputer {
             when (opCode) {
                 1 -> add(program)
                 2 -> multiply(program)
-                3 -> input(program, input!!)
+                3 -> {
+                    if (input == null || inputPointer > input.size - 1) {
+                        // Waiting for input
+                        return Pair(outputBuffer, WAITING_FOR_INPUT)
+                    }
+                    input(program, input[inputPointer])
+                    inputPointer++
+                }
                 4 -> output(program)
                 5 -> jumpIfTrue(program)
                 6 -> jumpIfFalse(program)
                 7 -> lessThan(program)
-                else -> equalOp(program)
+                else -> eq(program)
             }
         }
 
-        if (outputEndState) {
-            println("Program end state: $program")
-        }
-
-        return program[0]
+        return Pair(outputBuffer, DONE)
     }
 
     private fun add(program: MutableList<Int>) {
@@ -75,7 +83,9 @@ object IntCodeComputer {
     }
 
     private fun output(program: MutableList<Int>) {
-        println("Program output: ${getParameterValue(program, 1)}")
+        val value = getParameterValue(program, 1)
+        //println("Program output: $value")
+        outputBuffer.add(value)
 
         moveInstructionPointer(2)
     }
@@ -108,7 +118,7 @@ object IntCodeComputer {
         moveInstructionPointer(4)
     }
 
-    private fun equalOp(program: MutableList<Int>) {
+    private fun eq(program: MutableList<Int>) {
         val value1 = getParameterValue(program, 1)
         val value2 = getParameterValue(program, 2)
 
@@ -118,9 +128,7 @@ object IntCodeComputer {
     }
 
     private fun getParameterValue(program: MutableList<Int>, nr: Int): Int {
-        val parameterModes = getParameterModes(program, instructionPointer)
-
-        return if (getParameterMode(parameterModes, nr) == POSITION) program[program[instructionPointer + nr]]
+        return if (getParameterMode(program, nr) == POSITION) program[program[instructionPointer + nr]]
         else program[instructionPointer + nr]
     }
 
@@ -141,14 +149,12 @@ object IntCodeComputer {
         return if (code < 10) code else code % 100
     }
 
-    private fun getParameterModes(program: MutableList<Int>, instructionPointer: Int): List<Int> {
-        return (program[instructionPointer] / 100).toString().toCharArray()
+    private fun getParameterMode(program: MutableList<Int>, nr: Int): ParameterMode {
+        val modes = (program[instructionPointer] / 100).toString().toCharArray()
             .reversed()
             .map(Char::toString)
             .map { Integer.valueOf(it) }
-    }
 
-    private fun getParameterMode(modes: List<Int>, nr: Int): ParameterMode {
         return if (modes.size < nr || modes[nr - 1] == 0) POSITION else IMMEDIATE
     }
 
