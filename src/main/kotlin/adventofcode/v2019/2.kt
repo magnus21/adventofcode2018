@@ -5,7 +5,7 @@ import adventofcode.v2019.shared.IntCodeComputer
 
 fun main(args: Array<String>) {
 
-    val input = FileParser.getCommaSeparatedValuesAsList(2019, "2.txt").map { Integer.valueOf(it) }
+    val input = FileParser.getCommaSeparatedValuesAsList(2019, "2.txt").map { it.toLong() }
 
     // Run program.
     val program = input.toMutableList()
@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
 
 object Day2 {
 
-    fun findInputForOutput(program: MutableList<Int>, output: Int): Pair<Int, Int> {
+    fun findInputForOutput(program: MutableList<Long>, output: Long): Pair<Int, Int> {
         for (noun in 0..99) {
             for (verb in 0..99) {
                 val code = program.toMutableList()

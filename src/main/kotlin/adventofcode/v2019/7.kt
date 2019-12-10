@@ -9,16 +9,16 @@ object Day7 {
     @JvmStatic
     fun main(args: Array<String>) {
 
-        val input = FileParser.getCommaSeparatedValuesAsList(2019, "7.txt").map { Integer.valueOf(it) }
+        val input = FileParser.getCommaSeparatedValuesAsList(2019, "7.txt").map { it.toLong() }
 
         // Part 1
         val time1 = measureTimeMillis {
             val phaseSettings = generatePhaseSettingsFrom(listOf(0, 1, 2, 3, 4));
 
-            val outputSignals = mutableMapOf<Int, List<Int>>()
+            val outputSignals = mutableMapOf<Long, List<Long>>()
             for (phaseSetting in phaseSettings) {
 
-                var outputSignal = 0
+                var outputSignal = 0L
                 for (i in 0..4) {
                     val result =
                         IntCodeComputer(input.toMutableList()).runWithInput(listOf(phaseSetting[i], outputSignal))
@@ -37,15 +37,15 @@ object Day7 {
         val time2 = measureTimeMillis {
             val phaseSettings = generatePhaseSettingsFrom(listOf(5, 6, 7, 8, 9));
 
-            val outputSignals = mutableMapOf<Int, List<Int>>()
+            val outputSignals = mutableMapOf<Long, List<Long>>()
             for (phaseSetting in phaseSettings) {
 
-                var outputSignal = 0
+                var outputSignal = 0L
                 var counter = 0
                 val computers = (0..4).map { IntCodeComputer(input.toMutableList()) }
 
                 while (true) {
-                    var result: Pair<MutableList<Int>, Int> = Pair(mutableListOf(), 0)
+                    var result: Pair<MutableList<Long>, Int> = Pair(mutableListOf(), 0)
                     for (i in 0..4) {
                         val inputList =
                             if (counter == 0) listOf(phaseSetting[i], outputSignal) else listOf(outputSignal)
@@ -72,10 +72,10 @@ object Day7 {
     }
 
     private fun generatePhaseSettingsFrom(
-        list: List<Int>,
-        result: MutableList<List<Int>> = mutableListOf(),
-        permutation: List<Int> = listOf()
-    ): List<List<Int>> {
+        list: List<Long>,
+        result: MutableList<List<Long>> = mutableListOf(),
+        permutation: List<Long> = listOf()
+    ): List<List<Long>> {
 
         for (i in 0 until list.size) {
             if (permutation.size == 4) {

@@ -9,7 +9,7 @@ object Day5 {
     @JvmStatic
     fun main(args: Array<String>) {
 
-        val input = FileParser.getCommaSeparatedValuesAsList(2019, "5.txt").map { Integer.valueOf(it) }
+        val input = FileParser.getCommaSeparatedValuesAsList(2019, "5.txt").map { it.toLong() }
 
         // Run program.
         val time = measureTimeMillis {
