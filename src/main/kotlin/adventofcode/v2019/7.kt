@@ -1,6 +1,7 @@
 package adventofcode.v2019
 
 import adventofcode.util.FileParser
+import adventofcode.util.AdventOfCodeUtil
 import adventofcode.v2019.shared.IntCodeComputer
 import kotlin.system.measureTimeMillis
 
@@ -13,7 +14,7 @@ object Day7 {
 
         // Part 1
         val time1 = measureTimeMillis {
-            val phaseSettings = generatePhaseSettingsFrom(listOf(0, 1, 2, 3, 4));
+            val phaseSettings = AdventOfCodeUtil.generatePermutations(listOf(0L, 1, 2, 3, 4),5)
 
             val outputSignals = mutableMapOf<Long, List<Long>>()
             for (phaseSetting in phaseSettings) {
@@ -35,7 +36,7 @@ object Day7 {
 
         // Part 2
         val time2 = measureTimeMillis {
-            val phaseSettings = generatePhaseSettingsFrom(listOf(5, 6, 7, 8, 9));
+            val phaseSettings = AdventOfCodeUtil.generatePermutations(listOf(5L, 6, 7, 8, 9),5)
 
             val outputSignals = mutableMapOf<Long, List<Long>>()
             for (phaseSetting in phaseSettings) {

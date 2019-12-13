@@ -1,5 +1,6 @@
 package adventofcode.v2019
 
+import adventofcode.util.AdventOfCodeUtil.greatestCommonDivisor
 import adventofcode.util.FileParser
 
 object Day10 {
@@ -82,10 +83,6 @@ object Day10 {
     private fun reduceFraction(point: Pair<Int, Int>): Pair<Int, Int> {
         val d = greatestCommonDivisor(Math.abs(point.first), Math.abs(point.second))
         return Pair(point.first / d, point.second / d)
-    }
-
-    private fun greatestCommonDivisor(a: Int, b: Int): Int {
-        return if (b == 0) a else greatestCommonDivisor(b, a % b)
     }
 
     private fun getManhattanDistanceBetweenPoints(it: FieldPoint, other: FieldPoint): Pair<Int, Int> {
