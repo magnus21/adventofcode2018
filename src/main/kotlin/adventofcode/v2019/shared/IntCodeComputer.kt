@@ -22,8 +22,9 @@ class IntCodeComputer(var program: MutableList<Long>, var instructionPointer: In
         return runProgram(input)
     }
 
-    private fun runProgram(input: List<Long>? = null): Pair<MutableList<Long>, Int> {
+    fun runProgram(input: List<Long>? = null): Pair<MutableList<Long>, Int> {
         var inputPointer = 0
+        outputBuffer.clear()
 
         while (instructionPointer < program.size) {
             val opCode = getOpCode(instructionPointer)
