@@ -17,6 +17,11 @@ class LinkedList<T>(private val head: Node<T>) {
         current = head
     }
 
+    fun connectCurrentToHead() {
+        current.next = head
+        head.previous = current
+    }
+
     fun append(value: T): Node<T> {
         val node = Node(value)
         val tmp = current
