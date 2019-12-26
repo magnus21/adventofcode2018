@@ -54,6 +54,7 @@ object Day25 {
                 val testResult = freshComputer.runWithInput(toAscii("north"))
 
                 if (testResult.second == -1) {
+                    println("Correct items: $combination")
                     testResult.first.forEach { print(it.toChar()) }
                     break
                 }
