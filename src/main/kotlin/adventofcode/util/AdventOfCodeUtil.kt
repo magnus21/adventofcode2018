@@ -32,6 +32,27 @@ object AdventOfCodeUtil {
         return result
     }
 
+    fun <T> combinations(set: Set<T>, size: Int, accumulated: Set<T>, combinations: MutableList<Set<T>> = mutableListOf()): List<Set<T>> {
+        // 1. stop
+        if (set.size < size) {
+            return emptyList()
+        }
+        // 2. add each element in e to accumulated
+        if (size == 1) {
+            combinations.addAll(set.map { accumulated.toMutableSet().plus(it) })
+        }
+        // 3. add all elements in e to accumulated
+        else if (set.size == size) {
+            combinations.addAll(listOf(accumulated.plus(set)))
+        }
+        // 4. for each element, call combination
+        else if (set.size > size) {
+            set.forEach { combinations(set.minus(it), size - 1, accumulated.plus(it), combinations) }
+        }
+
+        return combinations
+    }
+
     fun greatestCommonDivisor(a: Int, b: Int): Int {
         return if (b == 0) a else greatestCommonDivisor(b, a % b)
     }

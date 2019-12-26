@@ -68,6 +68,6 @@ object Day21 {
     }
 
     private fun getScriptAsAscii(code: List<String>): List<Long> {
-        return code.flatMap { it.toCharArray().map { c -> c.toLong() }.plusElement(10L) }
+        return code.flatMap { it.toCharArray().map(Char::toLong).plusElement(10L) }
     }
 }
