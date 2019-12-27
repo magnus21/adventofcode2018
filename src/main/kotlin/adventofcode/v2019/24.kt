@@ -24,8 +24,8 @@ object Day24 {
                 stateMap = stateMap.entries.map { Pair(it.key, getNewState(it, stateMap)) }.toMap().toMutableMap()
                 val newState = getState(stateMap, size)
 
-                if(states.contains(newState)) {
-                   val result =  calculateBioDiversity(stateMap, size)
+                if (states.contains(newState)) {
+                    val result = calculateBioDiversity(stateMap, size)
                     println("Answer part 1: $result")
                     break
                 }
@@ -40,10 +40,32 @@ object Day24 {
 
 
         val time2 = measureTimeMillis {
+            var levels: MutableMap<Int, MutableMap<Position, Char>> = mutableMapOf()
+            levels[0] = map.toMutableMap()
 
+            for (i in 1..200) {
+                val keys = levels.keys
+                val limits = Pair(keys.min()!!, keys.max()!!)
+                levels[limits.first - 1] = createEmptyLevel()
+                levels[limits.second + 1] = createEmptyLevel()
+
+                levels = levels.entries.map { Pair(it.key, getNewStateForLevel(it.key, it.value, levels)) }.toMap()
+                    .toMutableMap()
+            }
+
+            //printLevels(levels,size)
+
+            val bugCount = levels
+                .map { level -> level.value.entries.filter { it.value == '#' }.count() }.sum()
+
+            println("Answer part 2: $bugCount")
 
         }
         println("Time part 2: ($time2 milliseconds)")
+    }
+
+    private fun createEmptyLevel(): MutableMap<Position, Char> {
+        return parseMap((1..5).map { "....." }).second
     }
 
     private fun calculateBioDiversity(
@@ -54,11 +76,11 @@ object Day24 {
         var result = 0
         for (y in 0 until size.second) {
             for (x in 0 until size.first) {
-                if(stateMap[Position(x,y)] == '#') {
+                if (stateMap[Position(x, y)] == '#') {
                     result += factor
                 }
 
-                factor *=2
+                factor *= 2
             }
         }
         return result
@@ -70,25 +92,90 @@ object Day24 {
     ): Char {
         val neighbours = getNeighbours(tile.key, map)
 
-        if (tile.value == '#') {
-            return if (neighbours.filter { it.second == '#' }.count() != 1) '.' else '#'
+        return if (tile.value == '#') {
+            if (neighbours.filter { it.second == '#' }.count() != 1) '.' else '#'
         } else {
             val bugCount = neighbours.filter { it.second == '#' }.count()
-            return if (bugCount == 1 || bugCount == 2) '#' else '.'
+            if (bugCount == 1 || bugCount == 2) '#' else '.'
         }
     }
 
-    private fun getState(
-        map: MutableMap<Position, Char>,
-        size: Pair<Int, Int>
-    ): String {
-        var state = ""
-        for (y in 0 until size.second) {
-            for (x in 0 until size.first) {
-                state += map[Position(x, y)]
-            }
+    private fun getNewStateForLevel(
+        levelKey: Int,
+        level: MutableMap<Position, Char>,
+        levels: MutableMap<Int, MutableMap<Position, Char>>
+    ): MutableMap<Position, Char> {
+        return level.entries.filter { it.key.x != 2 || it.key.y != 2 }
+            .map { Pair(it.key, getNewStateForPosition(it, levelKey, level, levels)) }.toMap().toMutableMap()
+    }
+
+    private fun getNewStateForPosition(
+        tile: MutableMap.MutableEntry<Position, Char>,
+        levelKey: Int,
+        level: MutableMap<Position, Char>,
+        levels: MutableMap<Int, MutableMap<Position, Char>>
+    ): Char {
+        val neighbours = getNeighboursRecursively(tile.key, levelKey, level, levels)
+
+        return if (tile.value == '#') {
+            if (neighbours.filter { it == '#' }.count() != 1) '.' else '#'
+        } else {
+            val bugCount = neighbours.filter { it == '#' }.count()
+            if (bugCount == 1 || bugCount == 2) '#' else '.'
         }
-        return state
+    }
+
+    private fun getNeighboursRecursively(
+        position: Position,
+        levelKey: Int,
+        level: MutableMap<Position, Char>,
+        levels: MutableMap<Int, MutableMap<Position, Char>>
+    ): List<Char> {
+
+        return values()
+            .map { getPosition(position, it) }
+            .flatMap { pos ->
+                val list = mutableListOf<Char>()
+                    if (pos.x == 2 && pos.y == 2) {
+                        if (levels[levelKey + 1] == null) {
+                            list.add('.')
+                        } else {
+                            list.addAll(when {
+                                position.x == 1 -> levels[levelKey + 1]!!.entries.filter { it.key.x == 0 }.map { it.value }
+                                position.x == 3 -> levels[levelKey + 1]!!.entries.filter { it.key.x == 4 }.map { it.value }
+                                position.y == 1 -> levels[levelKey + 1]!!.entries.filter { it.key.y == 0 }.map { it.value }
+                                else -> levels[levelKey + 1]!!.entries.filter { it.key.y == 4 }.map { it.value }
+                            })
+                        }
+                    } else if (pos.x == -1) {
+                        if (levels[levelKey - 1] == null) {
+                            list.add('.')
+                        } else {
+                            list.add(levels[levelKey - 1]!![Position(1, 2)]!!)
+                        }
+                    } else if (pos.x == 5) {
+                        if (levels[levelKey - 1] == null) {
+                            list.add('.')
+                        } else {
+                            list.add(levels[levelKey - 1]!![Position(3, 2)]!!)
+                        }
+                    } else if (pos.y == -1) {
+                        if (levels[levelKey - 1] == null) {
+                            list.add('.')
+                        } else {
+                            list.add(levels[levelKey - 1]!![Position(2, 1)]!!)
+                        }
+                    } else if (pos.y == 5) {
+                        if (levels[levelKey - 1] == null) {
+                            list.add('.')
+                        } else {
+                            list.add(levels[levelKey - 1]!![Position(2, 3)]!!)
+                        }
+                    } else {
+                        list.add(level[pos]!!)
+                    }
+                list
+            }
     }
 
     private fun getNeighbours(position: Position, map: MutableMap<Position, Char>): List<Pair<Position, Char>> {
@@ -110,6 +197,18 @@ object Day24 {
         }
     }
 
+    private fun getState(
+        map: MutableMap<Position, Char>,
+        size: Pair<Int, Int>
+    ): String {
+        var state = ""
+        for (y in 0 until size.second) {
+            for (x in 0 until size.first) {
+                state += map[Position(x, y)]
+            }
+        }
+        return state
+    }
 
     private fun parseMap(input: List<String>): Pair<Pair<Int, Int>, MutableMap<Position, Char>> {
 
@@ -126,6 +225,18 @@ object Day24 {
         return Pair(fieldSize, map)
     }
 
+    private fun printLevels(
+        levels: MutableMap<Int, MutableMap<Position, Char>>,
+        size: Pair<Int, Int>
+    ) {
+
+        levels.toSortedMap().entries
+            .filter { it.value.filter { tile -> tile.value == '#' }.count() > 0 }
+            .forEach {
+                println("Depth ${it.key}")
+                printMap(it.value, size)
+            }
+    }
 
     private fun printMap(
         map: MutableMap<Position, Char>,
@@ -134,7 +245,7 @@ object Day24 {
         for (y in 0 until size.second) {
             for (x in 0 until size.first) {
                 val tile = map[Position(x, y)]
-                print(tile)
+                print(if(tile == null) '?' else tile)
             }
             println()
         }
