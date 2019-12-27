@@ -31,8 +31,36 @@ object Day22 {
         println("Time part 1: ($time1 milliseconds)")
 
         val time2 = measureTimeMillis {
+            val n = 119315717514047L.toBigInteger()
 
-            println("Answer part 2: ${""}")
+            // Find the combined polynomial for all shuffles: x1 = a*x0 + b
+            var a = 1L
+            var b = 0L
+
+            shufflingCommands.forEach {
+                val pair = when (it.name) {
+                    "cut" -> Pair(1, -it.parameter!!)
+                    "deal with increment" -> Pair(it.parameter!!, 0)
+                    else -> Pair(-1, -1)
+                }
+
+                // a1 * (a0 * x + b0) + b1 == a1 * a0 * x + a1 * b0 + b1
+                // The `% n` doesn't change the result, but keeps the numbers small.
+                a = (pair.first * a) % n.toLong()
+                b = (pair.first * b + pair.second) % n.toLong()
+            }
+
+            val position = 2020
+            val m = 101741582076661
+
+            val ma = a.toBigInteger().modPow(m.toBigInteger(), n)
+            val mb = (b.toBigInteger() * (ma.minus(1.toBigInteger()) * (a - 1).toBigInteger().modInverse(n))) % n
+
+            // This computes "where does 2020 end up", but I want "what is at 2020".
+            //print((ma.times(position.toBigInteger() + mb) % n))
+
+            // So need to invert (2020 - MB) * inv(Ma)
+            println("Answer part 2: ${(position.toBigInteger().minus(mb) * ma.modInverse(n)) % n}")
         }
         println("Time part 2: ($time2 milliseconds)")
     }
