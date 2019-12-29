@@ -34,7 +34,7 @@ object Day18 {
                  val path = queue.dequeue()!!
 
                  if (path.keys.size == nrOfKeys) {
-                     // Too high: 3052
+                     // Takes a few minutes :/
                      // Result part 1: 3048 Keys: [u, o, x, n, e, q, f, b, i, w, c, k, m, t, y, s, d, z, r, g, a, j, h, l, p, v]
                      println("Result part 1: ${path.entireTrail.size} Keys: ${path.keys}")
                      break
@@ -55,17 +55,13 @@ object Day18 {
             val (size, map) = parseField(input)
 
             val startPositions = map.entries.filter { it.value == '@' }.map { it.key }.toMutableList()
-
             val keysAndDoors = getKeysAndDoorsPerQuadrant(map, size)
 
             val progressMap = mutableMapOf<Pair<Position, Set<Char>>, Int>()
 
-            val q1 = processQuadrant(0, startPositions, keysAndDoors, map, progressMap)
-            val q2 = processQuadrant(1, startPositions, keysAndDoors, map, progressMap)
-            val q3 = processQuadrant(2, startPositions, keysAndDoors, map, progressMap)
-            val q4 = processQuadrant(3, startPositions, keysAndDoors, map, progressMap)
+            val result = (0..3).map { processQuadrant(it, startPositions, keysAndDoors, map, progressMap) }.sum()
 
-            println("Answer part 2: ${q1 + q2 + q3 + q4}")
+            println("Answer part 2: $result")
 
         }
         println("Time part 2: ($time2 milliseconds)")
@@ -90,7 +86,7 @@ object Day18 {
                 return path.entireTrail.size
             }
 
-            processPath(path, map, queue, progressMap, keysAndDoors[quadrant]!!)
+            processPath(path, map, queue, progressMap, keysAndDoors[quadrant]!!, true)
         }
         return 0
     }
@@ -130,7 +126,8 @@ object Day18 {
         map: MutableMap<Position, Char>,
         queue: Queue<Path>,
         progressMap: MutableMap<Pair<Position, Set<Char>>, Int>,
-        keysAndDoors: Pair<List<Char>, List<Char>> = Pair(mutableListOf(), mutableListOf())
+        keysAndDoors: Pair<List<Char>, List<Char>> = Pair(mutableListOf(), mutableListOf()),
+        ignoreOtherQuadrantDoors: Boolean = false
     ) {
 
         // Random limit that seems to work :/
@@ -205,7 +202,11 @@ object Day18 {
                 )
             }
             .filter { !path.trailFromLastKey.contains(it.first) }
-            .filter { path.keys.contains(it.second.toLowerCase()) || !keysAndDoors.first.contains(it.second.toLowerCase()) }
+            .filter {
+                path.keys.contains(it.second.toLowerCase()) || (ignoreOtherQuadrantDoors && !keysAndDoors.first.contains(
+                    it.second.toLowerCase()
+                ))
+            }
             .forEach {
                 val newPath = Path(
                     it.first,
