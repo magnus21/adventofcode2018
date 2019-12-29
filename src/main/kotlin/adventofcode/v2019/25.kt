@@ -3,7 +3,6 @@ package adventofcode.v2019
 import adventofcode.util.AdventOfCodeUtil
 import adventofcode.util.FileParser
 import adventofcode.v2019.shared.IntCodeComputer
-import java.util.*
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
@@ -59,18 +58,8 @@ object Day25 {
                     break
                 }
             }
-
-
-            //println("Answer part 1: ${result.first.last()}")
         }
         println("Time part 1: ($time1 milliseconds)")
-
-        val time2 = measureTimeMillis {
-            val result = ""
-
-            println("Answer part 2: ${result}")
-        }
-        println("Time part 2: ($time2 milliseconds)")
     }
 
     private fun getItems(rooms: MutableList<Room>) =
