@@ -68,7 +68,7 @@ class LinkedList<T>(private val head: Node<T>) {
         val list = mutableListOf<T>()
 
         var node = head
-        var len = if(length != null) length else -1
+        var len = length ?: -1
         do {
             list.add(node.value)
             node = node.next!!

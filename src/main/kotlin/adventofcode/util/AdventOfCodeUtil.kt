@@ -7,7 +7,7 @@ object AdventOfCodeUtil {
         result: MutableList<List<T>> = mutableListOf(),
         permutation: List<T> = listOf()
     ): List<List<T>> {
-        for (i in 0 until list.size) {
+        for (i in list.indices) {
             if (permutation.size == length - 1) {
                 result.add(permutation.plusElement(list[i]))
                 break
@@ -23,7 +23,7 @@ object AdventOfCodeUtil {
 
     fun <T> generatePairs(list: List<T>): MutableList<Pair<T, T>> {
         val result = mutableListOf<Pair<T, T>>()
-        for (i in 0 until list.size) {
+        for (i in list.indices) {
             for (j in i + 1 until list.size) {
                 result.add(Pair(list[i], list[j]))
             }
@@ -32,22 +32,29 @@ object AdventOfCodeUtil {
         return result
     }
 
-    fun <T> combinations(set: Set<T>, size: Int, accumulated: Set<T>, combinations: MutableList<Set<T>> = mutableListOf()): List<Set<T>> {
+    fun <T> combinations(
+        set: Set<T>,
+        size: Int,
+        accumulated: Set<T>,
+        combinations: MutableList<Set<T>> = mutableListOf()
+    ): List<Set<T>> {
         // 1. stop
         if (set.size < size) {
             return emptyList()
         }
         // 2. add each element in e to accumulated
-        if (size == 1) {
-            combinations.addAll(set.map { accumulated.toMutableSet().plus(it) })
-        }
-        // 3. add all elements in e to accumulated
-        else if (set.size == size) {
-            combinations.addAll(listOf(accumulated.plus(set)))
-        }
-        // 4. for each element, call combination
-        else if (set.size > size) {
-            set.forEach { combinations(set.minus(it), size - 1, accumulated.plus(it), combinations) }
+        when {
+            size == 1 -> {
+                combinations.addAll(set.map { accumulated.toMutableSet().plus(it) })
+            }
+            // 3. add all elements in e to accumulated
+            set.size == size -> {
+                combinations.addAll(listOf(accumulated.plus(set)))
+            }
+            // 4. for each element, call combination
+            set.size > size -> {
+                set.forEach { combinations(set.minus(it), size - 1, accumulated.plus(it), combinations) }
+            }
         }
 
         return combinations
@@ -62,7 +69,7 @@ object AdventOfCodeUtil {
     }
 
     fun leastCommonMultiple(a: Long, b: Long): Long {
-        return a * b / greatestCommonDivisor(a, b);
+        return a * b / greatestCommonDivisor(a, b)
     }
 
 }

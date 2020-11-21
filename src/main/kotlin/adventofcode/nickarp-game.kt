@@ -3,7 +3,7 @@ package adventofcode
 import java.io.File
 
 
-fun main(args: Array<String>) {
+fun main() {
 
     val rawInput = File("src/main/resources/game.txt").readLines()
     val pinPositions = parsePinPoints(rawInput)
@@ -53,7 +53,7 @@ object NickarpGame {
         } else {
             val possibleMoves = getPossibleMoves(gameState)
 
-            if (!possibleMoves.isEmpty()) {
+            if (possibleMoves.isNotEmpty()) {
                 possibleMoves.map {
                     if(winningMovesList.isEmpty()) {
                         val newFieldState = gameState.field.toMutableMap()
@@ -138,11 +138,11 @@ private fun printPinPositions(
     println()
     print("  ")
     for (x in 0..8 step 2) {
-        print(x.toString() + " ")
+        print("$x ")
     }
     println()
     for (y in 0..4) {
-        print(y.toString() + " ")
+        print("$y ")
         for (x in 0..9) {
             print(pinPositions[PinPosition(x, y)]?.code ?: ' ')
         }
@@ -150,7 +150,7 @@ private fun printPinPositions(
     }
     print("   ")
     for (x in 1..7 step 2) {
-        print(x.toString() + " ")
+        print("$x ")
     }
     println()
     println()
