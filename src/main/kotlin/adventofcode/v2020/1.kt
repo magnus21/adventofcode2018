@@ -1,28 +1,30 @@
 package adventofcode.v2020
 
 import adventofcode.util.FileParser
-import java.util.Optional
+import java.util.*
 import java.util.Optional.empty
 import java.util.Optional.of
 import kotlin.system.measureTimeMillis
 
-fun main() {
-
-    val entries = FileParser.getFileRows(2020, "1.txt").map { Integer.valueOf(it) }
-
-
-    val time1 = measureTimeMillis {
-        println("answer part 1: " + Day1.get2020EntriesProduct(entries))
-    }
-    println("Time: $time1 ms")
-
-    val time2 = measureTimeMillis {
-        println("answer part 2: " + Day1.get2020ThreeEntriesProduct(entries))
-    }
-    println("Time: $time2 ms")
-}
-
 object Day1 {
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+
+        val entries = FileParser.getFileRows(2020, "1.txt").map { Integer.valueOf(it) }
+
+
+        val time1 = measureTimeMillis {
+            println("answer part 1: " + Day1.get2020EntriesProduct(entries))
+        }
+        println("Time: $time1 ms")
+
+        val time2 = measureTimeMillis {
+            println("answer part 2: " + Day1.get2020ThreeEntriesProduct(entries))
+        }
+        println("Time: $time2 ms")
+    }
+
     fun get2020EntriesProduct(entries: List<Int>): Optional<Int> {
 
         for (index in entries.indices) {
