@@ -10,5 +10,8 @@ class FileParser {
         fun getCommaSeparatedValuesAsList(year: Int, fileName: String): List<String> {
             return File("src/main/resources/v$year/$fileName").readText().split(",")
         }
+        fun getAsString(year: Int, fileName: String): String {
+            return File("src/main/resources/v$year/$fileName").readText()
+        }
     }
 }

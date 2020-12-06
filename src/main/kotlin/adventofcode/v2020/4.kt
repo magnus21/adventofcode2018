@@ -28,7 +28,7 @@ object Day4 {
         passports: List<Map<PassportField, String>>
     ) {
         val validPassportCount = passports.filter { isValidPart2(it) }.size
-        println("Part 1: $validPassportCount")
+        println("Part 2: $validPassportCount")
     }
 
     private fun isValidPart1(passport: Map<PassportField, String>): Boolean {
