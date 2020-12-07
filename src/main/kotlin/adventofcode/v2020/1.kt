@@ -15,12 +15,12 @@ object Day1 {
 
 
         val time1 = measureTimeMillis {
-            println("answer part 1: " + Day1.get2020EntriesProduct(entries))
+            println("answer part 1: " + get2020EntriesProduct(entries))
         }
         println("Time: $time1 ms")
 
         val time2 = measureTimeMillis {
-            println("answer part 2: " + Day1.get2020ThreeEntriesProduct(entries))
+            println("answer part 2: " + get2020ThreeEntriesProduct(entries))
         }
         println("Time: $time2 ms")
     }

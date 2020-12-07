@@ -12,12 +12,12 @@ object Day2 {
 
 
         val time1 = measureTimeMillis {
-            println("answer part 1: " + Day2.getValidPasswordCountPart1(rows))
+            println("answer part 1: " + getValidPasswordCountPart1(rows))
         }
         println("Time: $time1 ms")
 
         val time2 = measureTimeMillis {
-            println("answer part 2: " + Day2.getValidPasswordCountPart2(rows))
+            println("answer part 2: " + getValidPasswordCountPart2(rows))
         }
         println("Time: $time2 ms")
     }

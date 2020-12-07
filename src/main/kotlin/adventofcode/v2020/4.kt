@@ -17,18 +17,12 @@ object Day4 {
 
     enum class PassportField { byr, iyr, eyr, hgt, hcl, ecl, pid, cid }
 
-    private fun part1(
-        passports: List<Map<PassportField, String>>
-    ) {
-        val validPassportCount = passports.filter { isValidPart1(it) }.size
-        println("Part 1: $validPassportCount")
+    private fun part1(passports: List<Map<PassportField, String>>) {
+        println("Part 1: ${passports.filter { isValidPart1(it) }.size}")
     }
 
-    private fun part2(
-        passports: List<Map<PassportField, String>>
-    ) {
-        val validPassportCount = passports.filter { isValidPart2(it) }.size
-        println("Part 2: $validPassportCount")
+    private fun part2(passports: List<Map<PassportField, String>>) {
+        println("Part 2: ${passports.filter { isValidPart2(it) }.size}")
     }
 
     private fun isValidPart1(passport: Map<PassportField, String>): Boolean {

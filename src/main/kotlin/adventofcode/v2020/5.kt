@@ -24,9 +24,7 @@ object Day5 {
             seatId
         }
 
-        val highestSeatId = seatIds.max()
-
-        println("Part 1: $highestSeatId")
+        println("Part 1: ${seatIds.max()}")
 
         return seatIds
     }
