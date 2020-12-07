@@ -16,27 +16,16 @@ object Day7 {
 
             bags.values.forEach(::println)
 
-            println("Part 1: ${getShinyGolds(bags)}")
+            println("Part 1: ${bags.values.map { findShinyGoldBag(it, bags) }.filter { it }.count()}")
             println("Part 2: ${getBagsForOneShinyGold(bags)}")
         }
         println("Time: ($time milliseconds)")
     }
 
-
-    private fun getShinyGolds(bags: MutableMap<String, Bag>): Int {
-        // Breadth first search
-        return bags.values.map { findShinyGoldBag(it, bags) }.filter { it }.count()
-    }
-
-    private fun findShinyGoldBag(
-        bag: Bag,
-        bags: MutableMap<String, Bag>
-    ): Boolean {
-        val bagWithChildren = bags[bag.name]!!
+    private fun findShinyGoldBag(bag: Bag, bags: MutableMap<String, Bag>): Boolean {
         return when {
-            bagWithChildren.children.contains("shiny gold") -> true
-            bagWithChildren.children.isEmpty() -> false
-            else -> bagWithChildren.children.map { findShinyGoldBag(it.value, bags) }.contains(true)
+            bags[bag.name]!!.children.contains("shiny gold") -> true
+            else -> bags[bag.name]!!.children.map { findShinyGoldBag(it.value, bags) }.contains(true)
         }
     }
 
