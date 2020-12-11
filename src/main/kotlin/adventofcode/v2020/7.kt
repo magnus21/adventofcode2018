@@ -1,4 +1,4 @@
-package v2020
+package adventofcode.v2020
 
 import adventofcode.util.FileParser
 import kotlin.system.measureTimeMillis
