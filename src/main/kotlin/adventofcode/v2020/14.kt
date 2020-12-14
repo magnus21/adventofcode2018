@@ -33,18 +33,6 @@ object Day14 {
         return memory.values.sum();
     }
 
-    private fun maskValue(mask: CharArray, value: String): Long {
-        val paddedValue = value.padStart(36, '0')
-
-        return toDecimal(mask.mapIndexed { i, v -> if (v != 'X') v else paddedValue[i] })
-    }
-
-    private fun toDecimal(it: List<Char>): Long {
-        return it.reversed()
-            .mapIndexed { pos, bit -> if (bit == '1') 2.0.pow(pos.toDouble()).toLong() else 0L }
-            .sum()
-    }
-
     private fun part2(programs: List<Program>): Long {
         val memory = mutableMapOf<Long, Long>()
 
@@ -58,8 +46,20 @@ object Day14 {
         return memory.values.sum();
     }
 
+    private fun maskValue(mask: CharArray, value: String): Long {
+        val paddedValue = value.padStart(mask.size, '0')
+
+        return toDecimal(mask.mapIndexed { i, v -> if (v != 'X') v else paddedValue[i] })
+    }
+
+    private fun toDecimal(it: List<Char>): Long {
+        return it.reversed()
+            .mapIndexed { pos, bit -> if (bit == '1') 2.0.pow(pos.toDouble()).toLong() else 0L }
+            .sum()
+    }
+
     private fun maskAddress(mask: CharArray, address: String): List<Long> {
-        val paddedValue = address.padStart(36, '0')
+        val paddedValue = address.padStart(mask.size, '0')
         val result = mask.mapIndexed { i, v -> if (v == '0') paddedValue[i] else v }
 
         val addresses = if (result.count { it == 'X' } == 0) listOf(result) else generateAddresses(result)
@@ -80,13 +80,9 @@ object Day14 {
         }
     }
 
-    private fun getExpandedAddresses(
-        a: List<Char>,
-        i: Int
-    ): List<List<Char>> {
+    private fun getExpandedAddresses(address: List<Char>, index: Int): List<List<Char>> {
         return listOf('0', '1').map {
-            a.take(i).plusElement(it)
-                .plus(a.takeLast(a.size - i - 1))
+            address.take(index).plusElement(it).plus(address.takeLast(address.size - index - 1))
         }
     }
 
