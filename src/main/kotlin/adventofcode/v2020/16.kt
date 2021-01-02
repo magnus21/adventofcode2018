@@ -1,5 +1,6 @@
 package adventofcode.v2020
 
+import adventofcode.util.AdventOfCodeUtil
 import adventofcode.util.FileParser
 import kotlin.system.measureTimeMillis
 
@@ -41,14 +42,7 @@ object Day16 {
             )
         }
 
-        val pickedField = mutableSetOf<Int>()
-        val mapping = possiblePositionsForField
-            .sortedBy { it.second.size }
-            .map {
-                val chosen = it.second.first { p -> !pickedField.contains(p) }
-                pickedField.add(chosen)
-                Pair(chosen, it.first)
-            }.toMap()
+        val mapping = AdventOfCodeUtil.reduceOneToManyMatches(possiblePositionsForField).map { Pair(it.value,it.key) }.toMap()
 
         return ticketNotes.myTicket
             .filterIndexed { i, _ -> (mapping[i] ?: error("Can't find mapping!")).startsWith("departure") }.fold(1L) { acc, n -> acc * n }

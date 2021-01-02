@@ -121,4 +121,15 @@ object AdventOfCodeUtil {
         return a * b / greatestCommonDivisor(a, b)
     }
 
+    fun <T, U> reduceOneToManyMatches(possibleMatches: List<Pair<T, List<U>>>): Map<T, U> {
+        val pickedMatch = mutableSetOf<U>()
+        return possibleMatches
+            .sortedBy { it.second.size }
+            .map {
+                val chosen = it.second.first { p -> !pickedMatch.contains(p) }
+                pickedMatch.add(chosen)
+                Pair(it.first, chosen)
+            }.toMap()
+    }
+
 }
