@@ -60,6 +60,55 @@ object AdventOfCodeUtil {
         return combinations
     }
 
+    fun getNeighboursXd(pos: List<Int>): Set<List<Int>> {
+
+        val level = pos.size
+        val result = mutableSetOf<List<Int>>()
+
+        return getNeighbourCoords(pos, level, result, mutableListOf())
+            .filter { !it.all { n -> n == 0 } }
+            .map { it.mapIndexed { i, n -> pos[i] + n } }
+            .toSet()
+    }
+
+    private fun getNeighbourCoords(
+        pos: List<Int>,
+        level: Int,
+        result: MutableSet<List<Int>>,
+        neighbour: List<Int>
+    ): Set<List<Int>> {
+
+        if (level == 1) {
+            setOf(-1, 0, 1).forEach {
+                result.add(neighbour.plus(it))
+            }
+        } else {
+            setOf(-1, 0, 1).forEach {
+                getNeighbourCoords(pos, level - 1, result, neighbour.plus(it))
+            }
+        }
+
+        return result
+    }
+
+    fun getNeighbours3d(x: Int, y: Int, z: Int): Set<Triple<Int, Int, Int>> {
+        return setOf(-1, 0, 1).flatMap { zz ->
+            setOf(-1, 0, 1).flatMap { yy ->
+                setOf(-1, 0, 1).map { xx ->
+                    if (zz == 0 && yy == 0 && xx == 0) null else Triple(x + xx, y + yy, z + zz)
+                }
+            }
+        }.filterNotNull().toSet()
+    }
+
+    fun getNeighbours2d(x: Int, y: Int): Set<Pair<Int, Int>> {
+        return setOf(-1, 0, 1).flatMap { yy ->
+            setOf(-1, 0, 1).map { xx ->
+                if (yy == 0 && xx == 0) null else Pair(x + xx, y + yy)
+            }
+        }.filterNotNull().toSet()
+    }
+
     fun greatestCommonDivisor(a: Int, b: Int): Int {
         return if (b == 0) a else greatestCommonDivisor(b, a % b)
     }

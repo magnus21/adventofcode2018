@@ -87,6 +87,4 @@ object Day16 {
         val myTicket: List<Int>,
         val nearbyTickets: List<List<Int>>
     )
-
-
 }
