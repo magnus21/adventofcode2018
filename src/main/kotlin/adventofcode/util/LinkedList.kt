@@ -4,6 +4,20 @@ class LinkedList<T>(private val head: Node<T>) {
 
     private var current: Node<T> = head
 
+    private val lookupMap = mutableMapOf<T, Node<T>>()
+
+    /** Using this we only work if added nodes values are never changed or removed (remove and insert back works!) */
+    fun generateLookupMap(length: Int? = null) {
+
+        var node = head
+        var len = length ?: -1
+        do {
+            lookupMap[node.value] = node
+            node = node.next!!
+            len--
+        } while (node != head && node.next != null && len != 0)
+    }
+
     companion object {
         fun <T> fromList(list: List<T>): LinkedList<T> {
             val first = Node(list[0])
@@ -28,6 +42,51 @@ class LinkedList<T>(private val head: Node<T>) {
         current = node
         node.previous = tmp
         tmp.next = node
+        return node
+    }
+
+    fun insertNode(node: Node<T>): Node<T> {
+        val tmp = current
+        val tmpNext = current.next!!
+        current = node
+
+        node.previous = tmp
+        tmp.next = node
+
+        tmpNext.previous = node
+        node.next = tmpNext
+
+        return node
+    }
+
+    fun insert(value: T): Node<T> {
+        val node = Node(value)
+        val tmp = current
+        val tmpNext = current.next!!
+        current = node
+
+        node.previous = tmp
+        tmp.next = node
+
+        tmpNext.previous = node
+        node.next = tmpNext
+
+        return node
+    }
+
+    fun removeNext(): Node<T> {
+        stepToNext()
+        val node = current
+        current = node
+        node.previous!!.next = node.next
+        node.next!!.previous = node.previous
+
+        if (current == head) {
+            head == node.next!!
+        }
+        current = node.previous!!
+
+
         return node
     }
 
@@ -76,6 +135,30 @@ class LinkedList<T>(private val head: Node<T>) {
         } while (node != head && node.next != null && len != 0)
 
         return list
+    }
+
+    fun toListStartAtCurrent(length: Int? = null): List<T> {
+        val list = mutableListOf<T>()
+
+        var node = current
+        var len = length ?: -1
+        do {
+            list.add(node.value)
+            node = node.next!!
+            len--
+        } while (node != current && node.next != null && len != 0)
+
+        return list
+    }
+
+    /** NB! Can only be used if lookupMap has been generated */
+    fun goto(value: T): Node<T>? {
+        val result = lookupMap[value]
+        if (result != null) {
+            current = result
+            return current
+        }
+        return null
     }
 }
 
