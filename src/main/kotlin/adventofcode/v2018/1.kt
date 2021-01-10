@@ -4,7 +4,7 @@ import adventofcode.util.FileParser
 
 fun main(args: Array<String>) {
 
-    val frequencies = FileParser.getFileRows(2019, "1.txt").map { Integer.valueOf(it) }
+    val frequencies = FileParser.getFileRows(2018, "1.txt").map { Integer.valueOf(it) }
 
     // Sum freqs.
     println(frequencies.sum())
