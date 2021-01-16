@@ -3,7 +3,7 @@ package adventofcode.util
 object AdventOfCodeUtil {
     fun <T> generatePermutations(
         list: List<T>,
-        length: Int,
+        length: Int = list.size,
         result: MutableList<List<T>> = mutableListOf(),
         permutation: List<T> = listOf()
     ): List<List<T>> {
