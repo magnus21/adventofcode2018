@@ -185,10 +185,10 @@ object Day20 {
     }
 
     fun printMap(map: MutableMap<Position, Room>) {
-        val minY = map.keys.minBy { it.y }!!.y
-        val maxY = map.keys.maxBy { it.y }!!.y
-        val minX = map.keys.minBy { it.x }!!.x
-        val maxX = map.keys.maxBy { it.x }!!.x
+        val minY = map.keys.minByOrNull { it.y }!!.y
+        val maxY = map.keys.maxByOrNull { it.y }!!.y
+        val minX = map.keys.minByOrNull { it.x }!!.x
+        val maxX = map.keys.maxByOrNull { it.x }!!.x
 
         println()
         for (y in minY..maxY) {

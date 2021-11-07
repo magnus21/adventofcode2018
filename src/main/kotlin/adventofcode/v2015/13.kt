@@ -18,11 +18,11 @@ object Day13 {
             val permutations = AdventOfCodeUtil.generatePermutations(persons.toList())
 
             val answer = permutations.map { permutation ->
-                permutation.map { person ->
+                permutation.sumOf { person ->
                     getNeighbours(person, permutation)
                         .sumBy { neighbour -> happinessRelations[Pair(person, neighbour)] ?: error("Oops!") }
-                }.sum()
-            }.max()
+                }
+            }.maxOrNull()
 
             println("Part 1: $answer ")
         }
@@ -43,7 +43,7 @@ object Day13 {
                     getNeighbours(person, permutation)
                         .sumBy { neighbour -> happinessRelations[Pair(person, neighbour)] ?: error("Oops!") }
                 }.sum()
-            }.max()
+            }.maxOrNull()
 
             println("Part 2: $answer ")
         }

@@ -28,7 +28,7 @@ object Day7 {
                 outputSignals[outputSignal] = phaseSetting
             }
 
-            val maxOutputSignal = outputSignals.map { it.key }.max()!!
+            val maxOutputSignal = outputSignals.map { it.key }.maxOrNull()!!
             println("Max output signal, part 1: $maxOutputSignal")
         }
         println("Time part 1: ($time1 milliseconds)")
@@ -64,7 +64,7 @@ object Day7 {
                 }
             }
 
-            val maxOutputSignal = outputSignals.map { it.key }.max()!!
+            val maxOutputSignal = outputSignals.maxOf { it.key }
             println("Max output signal, part 2: $maxOutputSignal")
         }
         println("Time part 2: ($time2 milliseconds)")

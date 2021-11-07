@@ -22,7 +22,11 @@ object Day11 {
 
                 printField(newField, getFieldSize(field))
                 if (updatedField == newField) {
-                    println("No more changes, occupied seats: ${updatedField.values.filter { it == Tile.OCCUPIED }.count()}")
+                    println(
+                        "No more changes, occupied seats: ${
+                            updatedField.values.filter { it == Tile.OCCUPIED }.count()
+                        }"
+                    )
                     break
                 }
                 updatedField = newField
@@ -39,7 +43,11 @@ object Day11 {
 
                 printField(newField, getFieldSize(field))
                 if (updatedField == newField) {
-                    println("No more changes, occupied seats: ${updatedField.values.filter { it == Tile.OCCUPIED }.count()}")
+                    println(
+                        "No more changes, occupied seats: ${
+                            updatedField.values.filter { it == Tile.OCCUPIED }.count()
+                        }"
+                    )
                     break
                 }
                 updatedField = newField
@@ -131,22 +139,23 @@ object Day11 {
             var foundOccupied = false
             while (true) {
                 val currentPos = Position(pos.x + it.x * steps, pos.y + it.y * steps)
-                if( currentPos.x >= fieldSize.first.first &&
+                if (currentPos.x >= fieldSize.first.first &&
                     currentPos.x <= fieldSize.first.second &&
                     currentPos.y >= fieldSize.second.first &&
                     currentPos.y <= fieldSize.second.second &&
-                    field[currentPos]!! != Tile.EMPTY) {
+                    field[currentPos]!! != Tile.EMPTY
+                ) {
 
-                    if(field[currentPos]!! == Tile.OCCUPIED){
+                    if (field[currentPos]!! == Tile.OCCUPIED) {
                         foundOccupied = true
                         break
                     }
                 } else {
-                     break
+                    break
                 }
                 steps++
             }
-            if(foundOccupied)  1 else 0
+            if (foundOccupied) 1 else 0
         }.sum()
     }
 
@@ -174,8 +183,8 @@ object Day11 {
 
 
     private fun getFieldSize(field: MutableMap<Position, Tile>): Pair<Pair<Int, Int>, Pair<Int, Int>> {
-        val xSpan = Pair(field.keys.map { it.x }.min()!!, field.keys.map { it.x }.max()!!)
-        val ySpan = Pair(field.keys.map { it.y }.min()!!, field.keys.map { it.y }.max()!!)
+        val xSpan = Pair(field.keys.minOf { it.x }, field.keys.maxOf { it.x })
+        val ySpan = Pair(field.keys.minOf { it.y }, field.keys.maxOf { it.y })
 
         return Pair(xSpan, ySpan)
     }

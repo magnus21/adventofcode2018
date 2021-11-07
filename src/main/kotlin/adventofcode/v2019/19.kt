@@ -81,8 +81,8 @@ object Day19 {
 
     private fun printMap(map: MutableMap<Position, Int>) {
 
-        val xSpan = Pair(map.keys.map { it.x }.min()!!, map.keys.map { it.x }.max()!!)
-        val ySpan = Pair(map.keys.map { it.y }.min()!!, map.keys.map { it.y }.max()!!)
+        val xSpan = Pair(map.keys.minOf { it.x }, map.keys.maxOf { it.x })
+        val ySpan = Pair(map.keys.minOf { it.y }, map.keys.maxOf { it.y })
 
         for (y in ySpan.first..ySpan.second) {
             for (x in xSpan.first..xSpan.second) {

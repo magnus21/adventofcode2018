@@ -18,7 +18,7 @@ object Day23 {
         val nanoBots = parseInput(rawInput)
         println(nanoBots.sortedByDescending { it.radius }.take(5))
 
-        val maxNanoBot = nanoBots.maxBy { it.radius }!!
+        val maxNanoBot = nanoBots.maxByOrNull { it.radius }!!
         println(maxNanoBot)
 
         val nanoBotsInRange =
@@ -53,7 +53,7 @@ object Day23 {
                         }
                     }
                 }
-                val newMax = guessMap.toList().sortedBy { it.first.x + it.first.y + it.first.z }.maxBy { it.second }!!
+                val newMax = guessMap.toList().sortedBy { it.first.x + it.first.y + it.first.z }.maxByOrNull { it.second }!!
                 println(newMax)
 
                 if (newMax.second <= goodGuessValue) {

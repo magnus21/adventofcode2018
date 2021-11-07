@@ -1,6 +1,7 @@
 package adventofcode.v2019
 
 import adventofcode.util.FileParser
+import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 
 object Day3 {
@@ -11,18 +12,18 @@ object Day3 {
         val input = FileParser.getFileRows(2019, "3.txt").map { s -> s.split(",") }
 
         val time = measureTimeMillis {
-            val grid1 = Day3.getGridCoordinates(input[0])
-            val grid2 = Day3.getGridCoordinates(input[1])
+            val grid1 = getGridCoordinates(input[0])
+            val grid2 = getGridCoordinates(input[1])
 
             val intersections = grid1.intersect(grid2)
 
             // Part 1
-            println(intersections.map { Math.abs(it.x) + Math.abs(it.y) }.min())
+            println(intersections.map { abs(it.x) + abs(it.y) }.minOrNull())
 
             // Part 2
             println(intersections
-                .map { i -> Day3.getSteps(grid1, i)!!.steps + Day3.getSteps(grid2, i)!!.steps }
-                .min())
+                .map { i -> getSteps(grid1, i)!!.steps + getSteps(grid2, i)!!.steps }
+                .minOrNull())
         }
         println("Time: ($time milliseconds)")
     }

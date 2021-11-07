@@ -42,7 +42,7 @@ object Day9 {
                 val sum = range.sum()
 
                 if (sum == part1Answer) {
-                    return range.min()!! + range.max()!!
+                    return range.minOrNull()!! + range.maxOrNull()!!
                 } else if (sum > part1Answer || start + n > input.size) {
                     break
                 }

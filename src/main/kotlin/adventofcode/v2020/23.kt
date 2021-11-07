@@ -23,8 +23,8 @@ object Day23 {
         cups.startFromHead()
         cups.generateLookupMap()
 
-        val lowestCupValue = input.min()!!
-        val highestCupValue = input.max()!!
+        val lowestCupValue = input.minOrNull()!!
+        val highestCupValue = input.maxOrNull()!!
 
         doMoves(cups, lowestCupValue, highestCupValue, 100, true)
 
@@ -37,11 +37,11 @@ object Day23 {
 
     private fun part2(input: List<Int>): Long {
 
-        val lowestCupValue = input.min()!!
+        val lowestCupValue = input.minOrNull()!!
         val highestCupValue = 1000000
         val nrOfMoves = 10000000
 
-        val cupsAsList = input.plus((input.max()!! + 1)..highestCupValue)
+        val cupsAsList = input.plus((input.maxOrNull()!! + 1)..highestCupValue)
         val cups = LinkedList.fromList(cupsAsList)
         cups.connectCurrentToHead()
         cups.startFromHead()

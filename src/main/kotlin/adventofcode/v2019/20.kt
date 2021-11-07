@@ -163,7 +163,7 @@ object Day20 {
 
     private fun parseMap(input: List<String>): Triple<Pair<Int, Int>, MutableMap<Position, Char>, MutableMap<Position, Portal>> {
 
-        val fieldSize = Pair(input.map { it.length }.max()!!, input.size)
+        val fieldSize = Pair(input.maxOf { it.length }, input.size)
         val map = mutableMapOf<Position, Char>()
 
         for (y in 0 until fieldSize.second) {

@@ -42,7 +42,7 @@ object Day13 {
                 }
 
                 joystickInput =
-                        if (gameState.ball.x < gameState.paddle.x) -1 else if (gameState.ball.x > gameState.paddle.x) 1 else 0
+                    if (gameState.ball.x < gameState.paddle.x) -1 else if (gameState.ball.x > gameState.paddle.x) 1 else 0
             }
 
 
@@ -71,8 +71,8 @@ object Day13 {
 
     private fun printGame(gameState: GameState) {
         val pixels = gameState.pixels
-        val xSpan = Pair(pixels.keys.map { it.x }.min()!!, pixels.keys.map { it.x }.max()!!)
-        val ySpan = Pair(pixels.keys.map { it.y }.min()!!, pixels.keys.map { it.y }.max()!!)
+        val xSpan = Pair(pixels.keys.minOf { it.x }, pixels.keys.maxOf { it.x })
+        val ySpan = Pair(pixels.keys.minOf { it.y }, pixels.keys.maxOf { it.y })
 
         val i = 0;
         for (y in ySpan.first..ySpan.second) {

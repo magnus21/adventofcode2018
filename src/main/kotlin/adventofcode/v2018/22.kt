@@ -1,10 +1,10 @@
 package adventofcode.v2018
 
+import adventofcode.util.Queue
 import adventofcode.v2018.RegionType.*
 import adventofcode.v2018.Tool.*
-import adventofcode.util.Queue
 
-fun main(args: Array<String>) {
+fun main() {
 
     val depth = 11394
     val targetPosition = Position(7, 701)
@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
     val reachedPositionsPerTool = mutableMapOf<Pair<Position, Tool>, Int>()
 
     pathQueue.enqueue(PathPosition(mutableListOf(startPosition), 0, TORCH))
-    reachedPositionsPerTool.put(Pair(startPosition, TORCH), 0)
+    reachedPositionsPerTool[Pair(startPosition, TORCH)] = 0
 
     val targetPaths = mutableListOf<PathPosition>()
     while (pathQueue.isNotEmpty()) {
@@ -81,22 +81,26 @@ object Day22 {
         targetPaths: MutableList<PathPosition>
     ) {
         val pathPosition = pathQueue.dequeue()!!
-        val currentBestTime = targetPaths.map { it.time }.min()
+        val currentBestTime = targetPaths.map { it.time }.minOrNull()
         val currentTool = pathPosition.tool
         val currentPosition = pathPosition.path.last()
-        val currentRegion = map.get(currentPosition)!!
+        val currentRegion = map[currentPosition]!!
         val otherPossibleTool = getPossibleToolsFor(currentRegion).first { tool -> tool != currentTool }
 
         if (currentPosition == targetPosition && currentTool == TORCH) {
             targetPaths.add(PathPosition(pathPosition.path, pathPosition.time, TORCH))
-        } else if (pathPosition.time + 7 < reachedPositions.getOrDefault(Pair(currentPosition, otherPossibleTool), Int.MAX_VALUE)) {
+        } else if (pathPosition.time + 7 < reachedPositions.getOrDefault(
+                Pair(currentPosition, otherPossibleTool),
+                Int.MAX_VALUE
+            )
+        ) {
             val pathList = mutableListOf<Position>()
             pathList.addAll(pathPosition.path)
 
             val newPathPosition = PathPosition(pathList, pathPosition.time + 7, otherPossibleTool)
             pathQueue.enqueue(newPathPosition)
 
-            reachedPositions.put(Pair(currentPosition, otherPossibleTool), pathPosition.time + 7)
+            reachedPositions[Pair(currentPosition, otherPossibleTool)] = pathPosition.time + 7
         }
 
         listOf(Pair(0, 1), Pair(1, 0), Pair(-1, 0), Pair(0, -1))
@@ -110,9 +114,9 @@ object Day22 {
             .filter { !pathPosition.path.contains(it) }
             .filter { currentBestTime == null || pathPosition.time + 1 < currentBestTime }
             .forEach {
-                val region = map.get(it)
+                val region = map[it]
                 //{ key -> calculateRegion(it, startPosition, targetPosition, map, depth) }
-                if (region != null && getPossibleToolsFor(region).any { it == currentTool }) {
+                if (region != null && getPossibleToolsFor(region).any { tool -> tool == currentTool }) {
                     val time = pathPosition.time + 1
 
                     if (time < reachedPositions.getOrDefault(Pair(it, currentTool), Int.MAX_VALUE)) {
@@ -124,7 +128,7 @@ object Day22 {
                         val newPathPosition = PathPosition(pathList, time, currentTool)
                         pathQueue.enqueue(newPathPosition)
 
-                        reachedPositions.put(Pair(it, currentTool), time)
+                        reachedPositions[Pair(it, currentTool)] = time
                     }
                 }
             }
@@ -166,7 +170,7 @@ object Day22 {
 
         val region = Region(position, geologicalIndex, erosionLevel, type)
 
-        map.put(position, region)
+        map[position] = region
 
         return region
     }
@@ -180,10 +184,10 @@ object Day22 {
         targetPosition: Position,
         startPosition: Position
     ) {
-        val minY = map.keys.minBy { it.y }!!.y
-        val maxY = map.keys.maxBy { it.y }!!.y
-        val minX = map.keys.minBy { it.x }!!.x
-        val maxX = map.keys.maxBy { it.x }!!.x
+        val minY = map.keys.minByOrNull { it.y }!!.y
+        val maxY = map.keys.maxByOrNull { it.y }!!.y
+        val minX = map.keys.minByOrNull { it.x }!!.x
+        val maxX = map.keys.maxByOrNull { it.x }!!.x
 
         println()
         for (y in minY..maxY) {

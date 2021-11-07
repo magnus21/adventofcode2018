@@ -164,8 +164,8 @@ object Day15 {
     ): Pair<Pair<Int, Int>, Pair<Int, Int>> {
         val fieldWithDroid = field.toMutableMap()
         fieldWithDroid[droidPosition] = REPAIR_DROID
-        val xSpan = Pair(fieldWithDroid.keys.map { it.x }.min()!!, fieldWithDroid.keys.map { it.x }.max()!!)
-        val ySpan = Pair(fieldWithDroid.keys.map { it.y }.min()!!, fieldWithDroid.keys.map { it.y }.max()!!)
+        val xSpan = Pair(fieldWithDroid.keys.minOf { it.x }, fieldWithDroid.keys.maxOf { it.x })
+        val ySpan = Pair(fieldWithDroid.keys.minOf { it.y }, fieldWithDroid.keys.maxOf { it.y })
 
         return Pair(xSpan, ySpan)
     }

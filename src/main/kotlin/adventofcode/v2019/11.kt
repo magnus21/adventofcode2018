@@ -1,7 +1,8 @@
 package adventofcode.v2019
 
 import adventofcode.util.FileParser
-import adventofcode.v2019.Day11.Color.*
+import adventofcode.v2019.Day11.Color.BLACK
+import adventofcode.v2019.Day11.Color.WHITE
 import adventofcode.v2019.Day11.Direction.*
 import adventofcode.v2019.shared.IntCodeComputer
 import kotlin.system.measureTimeMillis
@@ -79,12 +80,12 @@ object Day11 {
     }
 
     private fun getNextInput(hull: MutableMap<Coordinate, Color>, position: Coordinate): Long {
-        return hull.getOrDefault(position, BLACK).colorCode.toLong();
+        return hull.getOrDefault(position, BLACK).colorCode.toLong()
     }
 
     private fun printField(hull: MutableMap<Coordinate, Color>) {
-        val xSpan = Pair(hull.entries.map { it.key.x }.min()!!, hull.entries.map { it.key.x }.max()!!)
-        val ySpan = Pair(hull.entries.map { it.key.y }.min()!!, hull.entries.map { it.key.y }.max()!!)
+        val xSpan = Pair(hull.entries.minOf { it.key.x }, hull.entries.maxOf { it.key.x })
+        val ySpan = Pair(hull.entries.minOf { it.key.y }, hull.entries.maxOf { it.key.y })
         for (y in ySpan.first..ySpan.second) {
             for (x in xSpan.first..xSpan.second) {
                 val color = hull[Coordinate(x, y)]

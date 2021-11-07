@@ -24,7 +24,7 @@ object Day5 {
             seatId
         }
 
-        println("Part 1: ${seatIds.max()}")
+        println("Part 1: ${seatIds.maxOrNull()}")
 
         return seatIds
     }
@@ -41,7 +41,7 @@ object Day5 {
     }
 
     private fun part2Functional(seatIds: List<Int>) {
-        println("Part 2: " + (seatIds.min()!!..seatIds.max()!!).subtract(seatIds).first())
+        println("Part 2: " + (seatIds.minOrNull()!!..seatIds.maxOrNull()!!).subtract(seatIds).first())
     }
 
 

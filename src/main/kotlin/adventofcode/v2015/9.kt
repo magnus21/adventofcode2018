@@ -28,7 +28,7 @@ object Day9 {
 
             val result = locations.map { loc ->
                 findPath(loc, locations, neighbours, { _, _ -> false }, compareBy { it.distance })
-            }.filterNotNull().minBy { it.distance }!!
+            }.filterNotNull().minByOrNull { it.distance }!!
 
             println("Part 1: ${result.distance}")
         }
@@ -44,7 +44,7 @@ object Day9 {
                     { distance, path -> distance < path.distance },
                     compareByDescending { it.distance }
                 )
-            }.filterNotNull().maxBy { it.distance }!!
+            }.filterNotNull().maxByOrNull { it.distance }!!
 
             println("Part 2: ${result.distance}")
         }

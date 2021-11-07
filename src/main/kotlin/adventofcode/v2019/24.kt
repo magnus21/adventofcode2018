@@ -45,7 +45,7 @@ object Day24 {
 
             for (i in 1..200) {
                 val keys = levels.keys
-                val limits = Pair(keys.min()!!, keys.max()!!)
+                val limits = Pair(keys.minOrNull()!!, keys.maxOrNull()!!)
                 levels[limits.first - 1] = createEmptyLevel()
                 levels[limits.second + 1] = createEmptyLevel()
 
@@ -212,7 +212,7 @@ object Day24 {
 
     private fun parseMap(input: List<String>): Pair<Pair<Int, Int>, MutableMap<Position, Char>> {
 
-        val fieldSize = Pair(input.map { it.length }.max()!!, input.size)
+        val fieldSize = Pair(input.maxOf { it.length }, input.size)
         val map = mutableMapOf<Position, Char>()
 
         for (y in 0 until fieldSize.second) {

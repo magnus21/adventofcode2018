@@ -16,7 +16,7 @@ object Day13 {
             .filter { it != "x" }
             .map { it.toInt() }
             .map { Pair(it, if (earliestTimestamp % it == 0) 0 else it - earliestTimestamp % it) }
-            .minBy { it.second }!!
+            .minByOrNull { it.second }!!
 
         val time1 = measureTimeMillis {
 
@@ -82,7 +82,7 @@ object Day13 {
             Triple(dep, minute, minute - prev)
         }
 
-        val cycle = cycles.maxBy { it.third }!!
+        val cycle = cycles.maxByOrNull { it.third }!!
 
         var minute = cycle.second //100000000023260L //cycle.second
         val cycleOffset = cycle.first.second
