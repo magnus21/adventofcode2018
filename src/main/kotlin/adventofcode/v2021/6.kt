@@ -12,17 +12,17 @@ object Day6 {
             .map(Integer::valueOf)
 
         val time1 = measureTimeMillis {
-            println("answer part 1: ${getLanternFishesAfter(lanternFishTimers.toMutableList(), 80)}")
+            println("answer part 1: ${getLanternFishesAfter(lanternFishTimers, 80)}")
         }
         println("Time: $time1 ms")
 
         val time2 = measureTimeMillis {
-            println("answer part 2: ${getLanternFishesAfter(lanternFishTimers.toMutableList(), 256)}")
+            println("answer part 2: ${getLanternFishesAfter(lanternFishTimers, 256)}")
         }
         println("Time: $time2 ms")
     }
 
-    private fun getLanternFishesAfter(lanternFishTimers: MutableList<Int>, days: Int): Long {
+    private fun getLanternFishesAfter(lanternFishTimers: List<Int>, days: Int): Long {
         var timersMap = lanternFishTimers.groupingBy { it }.eachCount()
             .map { Pair(it.key, it.value.toLong()) }
             .toMap()
