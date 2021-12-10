@@ -109,6 +109,12 @@ object AdventOfCodeUtil {
         }.filterNotNull().toSet()
     }
 
+    fun getPerpendicularNeighbours2d(x: Int, y: Int): Set<Pair<Int, Int>> {
+        return setOf(Pair(1, 0), Pair(-1, 0), Pair(0, 1), Pair(0, -1)).map { pos ->
+            Pair(x + pos.first, y + pos.second)
+        }.toSet()
+    }
+
     fun greatestCommonDivisor(a: Int, b: Int): Int {
         return if (b == 0) a else greatestCommonDivisor(b, a % b)
     }
