@@ -101,6 +101,10 @@ object AdventOfCodeUtil {
         }.filterNotNull().toSet()
     }
 
+    fun getNeighbours2d(pos: Pair<Int, Int>): Set<Pair<Int, Int>> {
+        return getNeighbours2d(pos.first, pos.second)
+    }
+
     fun getNeighbours2d(x: Int, y: Int): Set<Pair<Int, Int>> {
         return setOf(-1, 0, 1).flatMap { yy ->
             setOf(-1, 0, 1).map { xx ->
