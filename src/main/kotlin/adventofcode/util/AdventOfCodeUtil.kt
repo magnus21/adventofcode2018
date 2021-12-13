@@ -1,5 +1,7 @@
 package adventofcode.util
 
+import adventofcode.v2018.Boundaries
+
 object AdventOfCodeUtil {
     fun <T> generatePermutations(
         list: List<T>,
@@ -140,6 +142,31 @@ object AdventOfCodeUtil {
                 pickedMatch.add(chosen)
                 Pair(it.first, chosen)
             }.toMap()
+    }
+
+    fun getBoundariesOfPoints(points: MutableSet<Pair<Int, Int>>): Boundaries {
+        return points.fold(Boundaries(Int.MAX_VALUE, Int.MAX_VALUE, -1, -1)) { bounds, point ->
+            if (point.first < bounds.xmin)
+                bounds.xmin = point.first
+            if (point.second < bounds.ymin)
+                bounds.ymin = point.second
+            if (point.first > bounds.xmax)
+                bounds.xmax = point.first
+            if (point.second > bounds.ymax)
+                bounds.ymax = point.second
+
+            bounds
+        }
+    }
+
+    fun printPoints(points: MutableSet<Pair<Int, Int>>, printBlanks: Boolean = false) {
+        val boundaries = getBoundariesOfPoints(points)
+        for (y in boundaries.ymin..boundaries.ymax) {
+            for (x in boundaries.xmin..boundaries.xmax) {
+                print(if (points.any { p -> p.first == x && p.second == y }) "#" else (if (printBlanks) "." else " "))
+            }
+            println()
+        }
     }
 
 }
