@@ -144,7 +144,7 @@ object AdventOfCodeUtil {
             }.toMap()
     }
 
-    fun getBoundariesOfPoints(points: MutableSet<Pair<Int, Int>>): Boundaries {
+    fun getBoundaries(points: Iterable<Pair<Int, Int>>): Boundaries {
         return points.fold(Boundaries(Int.MAX_VALUE, Int.MAX_VALUE, -1, -1)) { bounds, point ->
             if (point.first < bounds.xmin)
                 bounds.xmin = point.first
@@ -160,7 +160,7 @@ object AdventOfCodeUtil {
     }
 
     fun printPoints(points: MutableSet<Pair<Int, Int>>, printBlanks: Boolean = false) {
-        val boundaries = getBoundariesOfPoints(points)
+        val boundaries = getBoundaries(points)
         for (y in boundaries.ymin..boundaries.ymax) {
             for (x in boundaries.xmin..boundaries.xmax) {
                 print(if (points.any { p -> p.first == x && p.second == y }) "#" else (if (printBlanks) "." else " "))
