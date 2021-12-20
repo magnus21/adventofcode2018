@@ -45,22 +45,11 @@ class LinkedList<T>(private val head: Node<T>) {
         return node
     }
 
-    fun insertNode(node: Node<T>): Node<T> {
-        val tmp = current
-        val tmpNext = current.next!!
-        current = node
-
-        node.previous = tmp
-        tmp.next = node
-
-        tmpNext.previous = node
-        node.next = tmpNext
-
-        return node
+    fun insert(value: T): Node<T> {
+        return insertNode(Node(value))
     }
 
-    fun insert(value: T): Node<T> {
-        val node = Node(value)
+    fun insertNode(node: Node<T>): Node<T> {
         val tmp = current
         val tmpNext = current.next!!
         current = node
@@ -125,14 +114,18 @@ class LinkedList<T>(private val head: Node<T>) {
 
     fun toList(length: Int? = null): List<T> {
         val list = mutableListOf<T>()
+        list.add(head.value)
+        var node = head.next
 
-        var node = head
         var len = length ?: -1
-        do {
+        while (node != head && node != null && len != 0) {
             list.add(node.value)
+            if(node.next == null) {
+                break
+            }
             node = node.next!!
             len--
-        } while (node != head && node.next != null && len != 0)
+        }
 
         return list
     }

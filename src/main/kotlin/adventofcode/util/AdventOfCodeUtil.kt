@@ -1,6 +1,6 @@
 package adventofcode.util
 
-import adventofcode.v2018.Boundaries
+import kotlin.math.abs
 
 object AdventOfCodeUtil {
     fun <T> generatePermutations(
@@ -144,6 +144,8 @@ object AdventOfCodeUtil {
             }.toMap()
     }
 
+    class Boundaries(var xmin: Int, var ymin: Int, var xmax: Int, var ymax: Int)
+
     fun getBoundaries(points: Iterable<Pair<Int, Int>>): Boundaries {
         return points.fold(Boundaries(Int.MAX_VALUE, Int.MAX_VALUE, -1, -1)) { bounds, point ->
             if (point.first < bounds.xmin)
@@ -168,5 +170,12 @@ object AdventOfCodeUtil {
             println()
         }
     }
+
+    data class Point(val x: Int, val y: Int, val z: Int)
+
+    fun getAbsDistance(from: Point, to: Point): Point {
+        return Point(abs(to.x - from.x), abs(to.y - from.y), abs(to.z - from.z));
+    }
+
 
 }

@@ -1,7 +1,8 @@
 package adventofcode.v2018
 
-import adventofcode.v2018.SquareState.*
+import adventofcode.util.AdventOfCodeUtil.Boundaries
 import adventofcode.util.Queue
+import adventofcode.v2018.SquareState.*
 import java.io.File
 
 fun main(args: Array<String>) {

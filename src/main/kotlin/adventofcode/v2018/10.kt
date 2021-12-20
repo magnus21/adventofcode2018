@@ -1,5 +1,6 @@
 package adventofcode.v2018
 
+import adventofcode.util.AdventOfCodeUtil.Boundaries
 import java.io.File
 
 fun main(args: Array<String>) {

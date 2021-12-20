@@ -1,5 +1,6 @@
 package adventofcode.v2015
 
+import adventofcode.util.AdventOfCodeUtil.generatePermutations
 import adventofcode.util.FileParser
 import kotlin.system.measureTimeMillis
 
@@ -14,7 +15,14 @@ object Day15 {
 
         val time1 = measureTimeMillis {
 
-            val answer = ""
+            val perms = generatePermutations((1..100).toList(), ingredients.size)
+                .filter { it.sum() == 100 }
+
+            //perms.map { factors ->
+            //    ingredients.mapIndexed{index,ingredient -> factors[*ingredient.properties[i]   }
+            //}
+
+            val answer = perms.size
 
             println("Part 1: $answer ")
         }

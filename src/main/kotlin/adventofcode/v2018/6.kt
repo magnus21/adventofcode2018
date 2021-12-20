@@ -1,5 +1,6 @@
 package adventofcode.v2018
 
+import adventofcode.util.AdventOfCodeUtil
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -70,12 +71,11 @@ fun main(args: Array<String>) {
     println("# close coords:" + closeLocations.size)
 }
 
-class Boundaries(var xmin: Int, var ymin: Int, var xmax: Int, var ymax: Int)
 class Coord(val x: Int, val y: Int)
 class Location(val coord: Coord, val number: Char)
 
-fun getBoundaries(locations: List<Coord>): Boundaries {
-    return locations.fold(Boundaries(10000, 100000, -1, -1)) { bounds, coord ->
+fun getBoundaries(locations: List<Coord>): AdventOfCodeUtil.Boundaries {
+    return locations.fold(AdventOfCodeUtil.Boundaries(10000, 100000, -1, -1)) { bounds, coord ->
         if (coord.x < bounds.xmin)
             bounds.xmin = coord.x
         if (coord.y < bounds.ymin)
