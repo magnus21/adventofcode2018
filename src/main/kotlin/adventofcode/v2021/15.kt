@@ -14,7 +14,7 @@ object Day15 {
             val riskLevelMap = parseInput(FileParser.getFileRows(2021, "15.txt"))
             val lowestRiskPathSum = findPathWithLowestRisk(riskLevelMap)
 
-            println("answer part 2: $lowestRiskPathSum")
+            println("answer part 1: $lowestRiskPathSum")
         }
         println("Time: $time1 ms")
 

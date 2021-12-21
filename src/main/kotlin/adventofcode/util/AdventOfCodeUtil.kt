@@ -171,7 +171,7 @@ object AdventOfCodeUtil {
         }
     }
 
-    data class Point(val x: Int, val y: Int, val z: Int)
+    data class Point(val x: Int, val y: Int, val z: Int = 0)
 
     fun getAbsDistance(from: Point, to: Point): Point {
         return Point(abs(to.x - from.x), abs(to.y - from.y), abs(to.z - from.z));
