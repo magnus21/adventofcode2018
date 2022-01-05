@@ -177,5 +177,11 @@ object AdventOfCodeUtil {
         return Point(abs(to.x - from.x), abs(to.y - from.y), abs(to.z - from.z));
     }
 
+    fun manhattanDistance(from: Point, to: Point): Int {
+        return abs(from.x - to.x) +
+                abs(from.y - to.y) +
+                abs(from.z - to.z);
+    }
+
 
 }
