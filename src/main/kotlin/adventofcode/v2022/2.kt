@@ -15,7 +15,7 @@ object Day2 {
 
         val time1 = measureTimeMillis {
             val answer = input
-                .map { Pair(toRPC(it.first), toRPC(it.second)) }
+                .map { toRPC(it.first) to toRPC(it.second) }
                 .sumOf { getScore(it) }
             println("answer part 1: $answer")
         }
@@ -23,7 +23,7 @@ object Day2 {
 
         val time2 = measureTimeMillis {
             val answer = input
-                .map { Pair(toRPC(it.first), toRPC2(it)) }
+                .map { toRPC(it.first) to toRPC2(it) }
                 .sumOf { getScore(it) }
             println("answer part 2: $answer")
         }
