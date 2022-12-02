@@ -1,8 +1,19 @@
 package adventofcode.util
 
 import kotlin.math.abs
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 object AdventOfCodeUtil {
+
+    @ExperimentalTime
+    fun <T> printResult(message: String, block: () -> T) {
+        val (result, duration) = measureTimedValue {
+            block()
+        }
+        println("$message: $result ($duration)")
+    }
+
     fun <T> generatePermutations(
         list: List<T>,
         length: Int = list.size,

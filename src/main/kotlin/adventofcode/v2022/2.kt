@@ -1,11 +1,14 @@
 package adventofcode.v2022
 
+import adventofcode.util.AdventOfCodeUtil
+import adventofcode.util.AdventOfCodeUtil.printResult
 import adventofcode.util.FileParser
 import adventofcode.v2022.Day2.RPC.*
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
 
 object Day2 {
 
+    @OptIn(ExperimentalTime::class)
     @JvmStatic
     fun main(args: Array<String>) {
         val input = FileParser.getFileRows(2022, "2.txt").map {
@@ -13,21 +16,13 @@ object Day2 {
             parts[0] to parts[1]
         }
 
-        val time1 = measureTimeMillis {
-            val answer = input
-                .map { toRPC(it.first) to toRPC(it.second) }
-                .sumOf { getScore(it) }
-            println("answer part 1: $answer")
+        printResult("part 1") {
+            input.map { toRPC(it.first) to toRPC(it.second) }.sumOf { getScore(it) }
         }
-        println("Time: $time1 ms")
 
-        val time2 = measureTimeMillis {
-            val answer = input
-                .map { toRPC(it.first) to toRPC2(it) }
-                .sumOf { getScore(it) }
-            println("answer part 2: $answer")
+        printResult("part 1") {
+            input.map { toRPC(it.first) to toRPC2(it) }.sumOf { getScore(it) }
         }
-        println("Time: $time2 ms")
     }
 
     private fun getScore(pair: Pair<RPC, RPC>): Int =
