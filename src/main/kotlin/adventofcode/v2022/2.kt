@@ -20,7 +20,7 @@ object Day2 {
             input.map { toRPC(it.first) to toRPC(it.second) }.sumOf { getScore(it) }
         }
 
-        printResult("part 1") {
+        printResult("part 2") {
             input.map { toRPC(it.first) to toRPC2(it) }.sumOf { getScore(it) }
         }
     }
