@@ -172,11 +172,21 @@ object AdventOfCodeUtil {
         }
     }
 
-    fun printPoints(points: MutableSet<Pair<Int, Int>>, printBlanks: Boolean = false) {
+    fun printPoints(points: MutableSet<Pair<Int, Int>>, printBlanks: Boolean = false, blankChar: Char = '.') {
         val boundaries = getBoundaries(points)
         for (y in boundaries.ymin..boundaries.ymax) {
             for (x in boundaries.xmin..boundaries.xmax) {
-                print(if (points.any { p -> p.first == x && p.second == y }) "#" else (if (printBlanks) "." else " "))
+                print(if (points.any { p -> p.first == x && p.second == y }) "#" else (if (printBlanks) blankChar else " "))
+            }
+            println()
+        }
+    }
+
+    fun printPointsMap(points: Map<Pair<Int, Int>, Char>, printBlanks: Boolean = true, blankChar: Char = '.') {
+        val boundaries = getBoundaries(points.keys.map { Pair(it.first, it.second) }.toMutableSet())
+        for (y in boundaries.ymin .. boundaries.ymax) {
+            for (x in boundaries.xmin..boundaries.xmax) {
+                print(if (points.keys.any { p -> p.first == x && p.second == y }) points[Pair(x,y)] else (if (printBlanks) blankChar else " "))
             }
             println()
         }
