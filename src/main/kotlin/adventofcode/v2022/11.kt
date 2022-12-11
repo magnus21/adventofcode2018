@@ -20,9 +20,9 @@ object Day11 {
     }
 
     private fun part2(monkeys: List<Monkey>): Long {
-        val dividerGcd = monkeys.map { it.divider }.reduce { acc, no -> acc * no }
+        val dividerLcm = monkeys.map { it.divider }.reduce { acc, no -> acc * no }
         return runRounds(monkeys, 10000) { operation, item ->
-            getWorryLevel(operation, if (item > dividerGcd) item % dividerGcd else item)
+            getWorryLevel(operation, if (item > dividerLcm) item % dividerLcm else item)
         }
     }
 
