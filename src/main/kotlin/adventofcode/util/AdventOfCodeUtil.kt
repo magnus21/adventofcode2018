@@ -65,7 +65,7 @@ object AdventOfCodeUtil {
                 combinations.addAll(listOf(accumulated.plus(set)))
             }
             // 4. for each element, call combination
-            set.size > size -> {
+            else -> {
                 set.forEach { combinations(set.minus(it), size - 1, accumulated.plus(it), combinations) }
             }
         }
@@ -147,12 +147,11 @@ object AdventOfCodeUtil {
     fun <T, U> reduceOneToManyMatches(possibleMatches: List<Pair<T, List<U>>>): Map<T, U> {
         val pickedMatch = mutableSetOf<U>()
         return possibleMatches
-            .sortedBy { it.second.size }
-            .map {
+            .sortedBy { it.second.size }.associate {
                 val chosen = it.second.first { p -> !pickedMatch.contains(p) }
                 pickedMatch.add(chosen)
                 Pair(it.first, chosen)
-            }.toMap()
+            }
     }
 
     class Boundaries(var xmin: Int, var ymin: Int, var xmax: Int, var ymax: Int)
@@ -172,6 +171,11 @@ object AdventOfCodeUtil {
         }
     }
 
+    fun isWithInBoundaries(boundaries: Boundaries, point: Point): Boolean {
+        return point.x >= boundaries.xmin && point.x <= boundaries.xmax &&
+                point.y >= boundaries.ymin && point.y <= boundaries.ymax
+    }
+
     fun printPoints(points: MutableSet<Pair<Int, Int>>, printBlanks: Boolean = false, blankChar: Char = '.') {
         val boundaries = getBoundaries(points)
         for (y in boundaries.ymin..boundaries.ymax) {
@@ -184,9 +188,14 @@ object AdventOfCodeUtil {
 
     fun printPointsMap(points: Map<Pair<Int, Int>, Char>, printBlanks: Boolean = true, blankChar: Char = '.') {
         val boundaries = getBoundaries(points.keys.map { Pair(it.first, it.second) }.toMutableSet())
-        for (y in boundaries.ymin .. boundaries.ymax) {
+        for (y in boundaries.ymin..boundaries.ymax) {
             for (x in boundaries.xmin..boundaries.xmax) {
-                print(if (points.keys.any { p -> p.first == x && p.second == y }) points[Pair(x,y)] else (if (printBlanks) blankChar else " "))
+                print(
+                    if (points.keys.any { p -> p.first == x && p.second == y }) points[Pair(
+                        x,
+                        y
+                    )] else (if (printBlanks) blankChar else " ")
+                )
             }
             println()
         }
