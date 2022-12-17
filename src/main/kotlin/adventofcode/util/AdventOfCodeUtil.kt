@@ -186,8 +186,13 @@ object AdventOfCodeUtil {
         }
     }
 
-    fun printPointsMap(points: Map<Pair<Int, Int>, Char>, printBlanks: Boolean = true, blankChar: Char = '.') {
-        val boundaries = getBoundaries(points.keys.map { Pair(it.first, it.second) }.toMutableSet())
+    fun printPointsMap(
+        points: Map<Pair<Int, Int>, Char>,
+        printBlanks: Boolean = true,
+        blankChar: Char = '.',
+        boundariesParam: Boundaries?
+    ) {
+        val boundaries = boundariesParam ?: getBoundaries(points.keys.map { Pair(it.first, it.second) }.toMutableSet())
         for (y in boundaries.ymin..boundaries.ymax) {
             for (x in boundaries.xmin..boundaries.xmax) {
                 print(
@@ -213,5 +218,28 @@ object AdventOfCodeUtil {
                 abs(from.z - to.z);
     }
 
+    fun manhattanDistance2D(from: Point, to: Point): Int {
+        return abs(from.x - to.x) + abs(from.y - to.y)
+    }
 
+    fun getMidPoint(points: Pair<Point, Point>): Point {
+        return Point((points.first.x + points.second.x) / 2, (points.first.y + points.second.y) / 2)
+    }
+
+    fun centerAround(point: Point, origo: Point) = Point(point.x - origo.x, point.y - origo.y)
+
+    fun rotate90Degrees(point: Point) = Point(point.y, point.x)
+
+    fun getLinearEqConstants(points: Pair<Point, Point>): Pair<Double, Double> {
+        val b = (points.first.y - points.second.y).toDouble() / (points.first.x - points.second.x).toDouble()
+        val c = points.first.y - b * points.first.x
+        return Pair(b, c)
+    }
+
+    fun intersectionOfLines(line1: Pair<Double, Double>, line2: Pair<Double, Double>): Point {
+        // line: b,c (y = bx + c)
+        val x: Double = (line1.second - line2.second) / (line2.first - line1.first)
+        val y: Double = line2.first * x + line2.second
+        return Point(x.toInt(), y.toInt())
+    }
 }
