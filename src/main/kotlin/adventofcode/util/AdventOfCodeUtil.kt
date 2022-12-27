@@ -114,6 +114,14 @@ object AdventOfCodeUtil {
         }.filterNotNull().toSet()
     }
 
+    fun getOneManhattanDistNeighbours3d(x: Int, y: Int, z: Int): Set<Point> {
+        return setOf(
+            Point(x - 1, y, z), Point(x + 1, y, z),
+            Point(x, y - 1, z), Point(x, y + 1, z),
+            Point(x, y, z - 1), Point(x, y, z + 1)
+        )
+    }
+
     fun getNeighbours2d(pos: Pair<Int, Int>): Set<Pair<Int, Int>> {
         return getNeighbours2d(pos.first, pos.second)
     }
@@ -155,6 +163,7 @@ object AdventOfCodeUtil {
     }
 
     class Boundaries(var xmin: Int, var ymin: Int, var xmax: Int, var ymax: Int)
+    class Boundaries3D(var xmin: Int, var ymin: Int, var zmin: Int, var xmax: Int, var ymax: Int, var zmax: Int)
 
     fun getBoundaries(points: Iterable<Pair<Int, Int>>): Boundaries {
         return points.fold(Boundaries(Int.MAX_VALUE, Int.MAX_VALUE, -1, -1)) { bounds, point ->
@@ -167,6 +176,24 @@ object AdventOfCodeUtil {
             if (point.second > bounds.ymax)
                 bounds.ymax = point.second
 
+            bounds
+        }
+    }
+
+    fun get3DBoundaries(points: Iterable<Point>): Boundaries3D {
+        return points.fold(Boundaries3D(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, -1, -1, -1)) { bounds, point ->
+            if (point.x < bounds.xmin)
+                bounds.xmin = point.x
+            if (point.y < bounds.ymin)
+                bounds.ymin = point.y
+            if (point.z < bounds.zmin)
+                bounds.zmin = point.z
+            if (point.x > bounds.xmax)
+                bounds.xmax = point.x
+            if (point.y > bounds.ymax)
+                bounds.ymax = point.y
+            if (point.z > bounds.zmax)
+                bounds.zmax = point.z
             bounds
         }
     }
