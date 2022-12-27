@@ -171,12 +171,16 @@ object AdventOfCodeUtil {
         }
     }
 
+    fun getBoundariesForPoints(points: Iterable<Point>): Boundaries {
+        return getBoundaries(points.map { Pair(it.x, it.y) })
+    }
+
     fun isWithInBoundaries(boundaries: Boundaries, point: Point): Boolean {
         return point.x >= boundaries.xmin && point.x <= boundaries.xmax &&
                 point.y >= boundaries.ymin && point.y <= boundaries.ymax
     }
 
-    fun printPoints(points: MutableSet<Pair<Int, Int>>, printBlanks: Boolean = false, blankChar: Char = '.') {
+    fun printPoints(points: Set<Pair<Int, Int>>, printBlanks: Boolean = false, blankChar: Char = '.') {
         val boundaries = getBoundaries(points)
         for (y in boundaries.ymin..boundaries.ymax) {
             for (x in boundaries.xmin..boundaries.xmax) {
@@ -185,6 +189,17 @@ object AdventOfCodeUtil {
             println()
         }
     }
+
+    fun printPointsLeftDownOrigo(points: Set<Pair<Int, Int>>, printBlanks: Boolean = false, blankChar: Char = '.') {
+        val boundaries = getBoundaries(points)
+        for (y in boundaries.ymax downTo boundaries.ymin) {
+            for (x in boundaries.xmin..boundaries.xmax) {
+                print(if (points.any { p -> p.first == x && p.second == y }) "#" else (if (printBlanks) blankChar else " "))
+            }
+            println()
+        }
+    }
+
 
     fun printPointsMap(
         points: Map<Pair<Int, Int>, Char>,
