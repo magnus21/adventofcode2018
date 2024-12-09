@@ -41,6 +41,4 @@ object Day3 {
         }
         return operations.sumOf { it.first * it.second }
     }
-
-
 }

@@ -32,7 +32,6 @@ object Day4 {
         return wordCount
     }
 
-
     private fun part2(data: Map<Point, Char>): Int {
         val directions = getDirections()
         val wordCount = data.entries
