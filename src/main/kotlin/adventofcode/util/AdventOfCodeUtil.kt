@@ -122,6 +122,9 @@ object AdventOfCodeUtil {
         )
     }
 
+    fun getNeighbours2d(pos: Point) =
+        getNeighbours2d(pos.x, pos.y).map { Point(it.first, it.second) }.toSet()
+
     fun getNeighbours2d(pos: Pair<Int, Int>): Set<Pair<Int, Int>> {
         return getNeighbours2d(pos.first, pos.second)
     }
@@ -137,6 +140,13 @@ object AdventOfCodeUtil {
     fun getPerpendicularNeighbours2d(x: Int, y: Int): Set<Pair<Int, Int>> {
         return setOf(Pair(1, 0), Pair(-1, 0), Pair(0, 1), Pair(0, -1)).map { pos ->
             Pair(x + pos.first, y + pos.second)
+        }.toSet()
+    }
+
+
+    fun getPerpendicularNeighbours2d(point: Point): Set<Point> {
+        return setOf(Pair(1, 0), Pair(-1, 0), Pair(0, 1), Pair(0, -1)).map { pos ->
+            Point(point.x + pos.first, point.y + pos.second)
         }.toSet()
     }
 
@@ -227,8 +237,21 @@ object AdventOfCodeUtil {
         }
     }
 
-
     fun printPointsMap(
+        points: Map<Point, Char>,
+        printBlanks: Boolean = true,
+        blankChar: Char = '.',
+        boundariesParam: Boundaries?
+    ) {
+        printPairMap(
+            points.map { Pair(Pair(it.key.x, it.key.y), it.value) }.toMap(),
+            printBlanks,
+            blankChar,
+            boundariesParam
+        )
+    }
+
+    fun printPairMap(
         points: Map<Pair<Int, Int>, Char>,
         printBlanks: Boolean = true,
         blankChar: Char = '.',

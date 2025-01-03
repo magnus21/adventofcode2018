@@ -1,6 +1,8 @@
 package adventofcode.util
 
-class Queue<T> {
+import java.util.function.Function
+
+class Queue<T : Any> {
     private val items: MutableList<T> = mutableListOf()
 
     fun enqueue(item: T) {
@@ -33,5 +35,17 @@ class Queue<T> {
 
     fun sortQueue(comparator: Comparator<T>) {
         items.sortWith(comparator)
+    }
+
+    fun <K> merge(
+        groupFunction: Function<T, K>,
+        mergeFunction: Function<Map.Entry<K, List<T>>, T>
+    ) {
+        val merged = items
+            .groupBy { groupFunction.apply(it) }
+            .map { mergeFunction.apply(it) }
+
+        items.clear()
+        items.addAll(merged)
     }
 }
